@@ -10,13 +10,13 @@ no_lett = str.maketrans(dict.fromkeys(string.ascii_lowercase))
 
 print("The purpose of this code is to convert speed units")
 
-def format_data():
+def format_data(): # This will extract the value and unit from the input
     inputunit = str(value.translate(no_numb))
     inputspeed = str(value.translate(no_lett))
     return inputunit, inputspeed
 
 
-def speed_converter():
+def speed_converter(): # This will convert speed values interchangeably from mph to kph and vice versa
     inputunit, inputspeed = format_data()
     if inputunit == "kph" and desiredunit == "mph":
         print("Value: " + inputspeed + ", " + "oUnit: " + inputunit + ", " + "dUnit: " + desiredunit)
@@ -28,7 +28,7 @@ def speed_converter():
         print("Please input your values correctly")
 
 
-while True:
+while True: # This will get values
     try:
         value, to_, desiredunit = input('Input, e.g: 200mph to kph ').split()
         format_data()
