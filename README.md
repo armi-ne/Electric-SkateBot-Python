@@ -22,4 +22,5 @@ Current commands:
 
 Date: 01/03/2018
 Total hours spent learning python: 38
+
 Days spent learning python: 6
