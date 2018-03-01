@@ -10,3 +10,15 @@ This new version of the converter has been re-written, only retaining around 5 l
 #2: Made after 48% completion of CodeCademy Course, total hours spent learning python: 33
 
 Inspired by: Test V2 and Jinra's Version. Both of which will be uploaded for reference.
+
+# Update 2, 01/03/2018
+First version of the bot uploaded.
+
+Current commands:
+1) ++Convert # Converts 2 given values
+2) ++Conversion Help # Returns list of commands for "++Convert"
+3) Who's your daddy # Returns "Armin Senpai"
+4) Ben pls # Returns :benpls: emoji
+
+Date: 01/03/2018
+Total hours spent learning python: 38
