@@ -8,18 +8,18 @@ no_numb = str.maketrans(dict.fromkeys('0123456789'))
 no_lett = str.maketrans(dict.fromkeys(string.ascii_lowercase))
 
 
-def user_input():
+def user_input():  # The purpose of this function is to gather user input and return the string
     user_input = input("Please input your desired conversion, e.g. 200mph ").lower()
     return user_input
 
 
-def data_formatter(arg):
+def data_formatter(arg):  # The purpose of this function is to take the user input and seperate the words and numbers, then assign them to new variables and return them
     user_speed = arg.translate(no_lett)
     user_unit = arg.translate(no_numb)
     return user_speed, user_unit
 
 
-def speed_converter(a, b):
+def speed_converter(a, b):  # This is the final step, the formatted unit and speed are taken in and through an IF statement it will find out the desired unit and will then proceed to convert it, printing out the result.
     if b == "kph":
         desired_unit = "mph"
         print("Value: " + a + ", " + "oUnit: " + b + ", " + "dUnit: " + desired_unit)
@@ -32,9 +32,9 @@ def speed_converter(a, b):
         print("Please input your values correctly")
 
 
-def executer():
+def executer():  # This is the main executer Function in which all the different functions are called upon and returned answers will be input into the next one e.t.c
     original = user_input()
     formatted_speed, formatted_unit = data_formatter(original)
     speed_converter(formatted_speed, formatted_unit)
 
-executer()
+executer()  # This executes the "executer" function
