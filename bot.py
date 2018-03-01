@@ -77,13 +77,16 @@ async def on_message(message):  # When you receive a message, the following if s
         command, user_input, user_desired = message.content.split(" ")
         await client.send_message(message.channel, executer(user_input, user_desired))
     # Who's your daddy?
-    if message.content.upper() == "WHO'S YOUR DADDY?":
+    if message.content.upper().startswith("WHO\'S YOUR DADDY"):
         await client.send_message(message.channel, "Armin Senpai")
     # Ben Pls
     if message.content.upper() == "BEN PLS":
         await client.send_message(message.channel, "<:benpls:382239983240478724>")
-    # Convert Help
-    if message.content.upper().startswith("++CONVERSION HELP"):
-        await client.send_message(message.channel, "Use \"++convert #Number#... ...\" kph <-> mph, km <-> mi, cm <-> inch, km <- Wh -> mi")
+    # Help
+    if message.content.upper() == "++HELP":
+        await client.send_message(message.channel, "Commands: Who's your daddy｜Ben Pls｜++help convert｜++convert")
+    # Help Convert
+    if message.content.upper().startswith("++HELP CONVERT"):
+        await client.send_message(message.channel, "Use \"++convert #Number#... ...\"｜kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi")
 
 client.run("")
