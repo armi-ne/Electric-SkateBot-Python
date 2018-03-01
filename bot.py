@@ -86,4 +86,4 @@ async def on_message(message):  # When you receive a message, the following if s
     if message.content.upper().startswith("++CONVERSION HELP"):
         await client.send_message(message.channel, "Use \"++convert #Number#... ...\" kph <-> mph, km <-> mi, cm <-> inch, km <- Wh -> mi")
 
-client.run("NDE3Mzg2MDM5NjkxMTgyMDgw.DXnTvg.s1iUUrbwKHQGJ2YJgJdbvHHituc")
+client.run("")
