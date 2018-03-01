@@ -1,4 +1,4 @@
-# python-tests
+# Python-tests
 Here I'll be testing out code for my work in progress python esk8 bot
 
 # Update, 01/03/2018
