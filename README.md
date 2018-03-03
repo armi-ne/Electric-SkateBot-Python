@@ -23,6 +23,7 @@ Current commands:
 Date: 01/03/2018
 
 Total hours spent learning python: 38
+
 Total days spent learning python: 6
 
 # Update 3, 03/03/2018, Version 2 Released!
