@@ -43,8 +43,7 @@ Get link to the official esk8 Reddit
 Get link to electric-skateboard.builders
 
 4) +easter eggs
- 
-
+_____________________________________________________________________________
 Easter Eggs
 
 Easter Eggs:
