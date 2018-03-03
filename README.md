@@ -28,7 +28,7 @@ Total days spent learning python: 6
 
 # Update 3, 03/03/2018, Version 2 Released!
 Version two released.
-
+_____________________________________________________________________________
 Current Commands:
 1) +convert
  
@@ -59,13 +59,13 @@ Everyone knows this one
 3) Who's your daddy?
  
 Want to know who was responsible for the bots birth?
-
+_____________________________________________________________________________
 Other changes:
 - Added "embed" to main commands for formatting.
 - Changed how floats are printed to limit them to 2 decimal places.
 - Added logging.
 - Prints Bot name and ID to console.
-
+_____________________________________________________________________________
 Date 03/03/2018
 
 Total hours spent learning python: 50
