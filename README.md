@@ -21,9 +21,9 @@ Current commands:
 4) Ben pls # Returns :benpls: emoji
 
 Date: 01/03/2018
-Total hours spent learning python: 38
 
-Days spent learning python: 6
+Total hours spent learning python: 38
+Total days spent learning python: 6
 
 # Update 3, 03/03/2018, Version 2 Released!
 Version two released.
@@ -51,3 +51,7 @@ Other changes:
 - Changed how floats are printed to limit them to 2 decimal places.
 - Added logging.
 - Prints Bot name and ID to console.
+
+Date 03/03/2018
+Total hours spent learning python: 50
+Total days spend learning python: 8
