@@ -124,7 +124,7 @@ async def on_message(message):
     if message.content.upper() == "BEN PLS":
         await client.send_message(message.channel, "<:benpls:382239983240478724>")
     # Who's your daddy?
-    if message.content.upper().startswith("WHO\'S YOUR DADDY") or message.content.upper().startswith("WHOS YOUR DADDY") or message.content.upper().startswith("WHO’S YOUR DADDY"):
+    if message.content.upper().startswith("WHO\'S YOUR DADDY") or message.content.upper().startswith("WHOS YOUR DADDY") or message.content.upper().startswith("WHO’S YOUR DADDY") or message.content.upper().startswith("WHO IS YOUR DADDY"):
         await client.send_message(message.channel, "Armin Senpai")
 
 client.run("")
