@@ -24,3 +24,30 @@ Date: 01/03/2018
 Total hours spent learning python: 38
 
 Days spent learning python: 6
+
+# Update 3, 03/03/2018, Version 2 Released!
+Version two released.
+
+Current Commands:
+1) +convert
+Use "+convert #Number#... ..."｜kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi
+2) +reddit
+Get link to the official esk8 Reddit
+3) +forum
+Get link to electric-skateboard.builders
+4) +easter eggs
+Easter Eggs
+
+Easter Eggs:
+1) Moshi Moshi
+UserName Desu
+2) Ben Pls
+Everyone knows this one
+3) Who's your daddy?
+Want to know who was responsible for the bots birth?
+
+Other changes:
+- Added "embed" to main commands for formatting.
+- Changed how floats are printed to limit them to 2 decimal places.
+- Added logging.
+- Prints Bot name and ID to console.
