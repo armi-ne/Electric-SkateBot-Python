@@ -26,6 +26,17 @@ async def on_ready():
     print("My ID is: " + client.user.id)
 
 
+@client.command(pass_context=True)
+async def server(ctx):
+    embed = discord.Embed(name="{}'s info".format(ctx.message.server.name), description="", color=0xFF0000)
+    embed.add_field(name="Name", value=ctx.message.server.name, inline=True)
+    embed.add_field(name="ID", value=ctx.message.server.id, inline=True)
+    embed.add_field(name="Number of e-Boarders", value=(len(ctx.message.server.members) - 3))
+    embed.add_field(name="Number of Channels", value=(len(ctx.message.server.channels)))
+    embed.set_thumbnail(url=ctx.message.server.icon_url)
+    await client.say(embed=embed)
+
+
 @client.event
 async def on_message(message):
     # Help
@@ -34,6 +45,7 @@ async def on_message(message):
         embed.add_field(name="+convert", value="Use \"+convert #Number# #Unit# #Desired Unit#\"｜kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi", inline=False)
         embed.add_field(name="+reddit", value="Get link to the official esk8 Reddit", inline=False)
         embed.add_field(name="+forum", value="Get link to electric-skateboard.builders", inline=False)
+        embed.add_field(name="+server", value="Server Information", inline=False)
         embed.add_field(name="+easter eggs", value="Easter Eggs", inline=False)
         await client.send_message(message.channel, embed=embed)
     # Easter Eggs
@@ -71,5 +83,9 @@ async def on_message(message):
     # Who's your daddy?
     if message.content.upper().startswith("WHO\'S YOUR DADDY") or message.content.upper().startswith("WHOS YOUR DADDY") or message.content.upper().startswith("WHO’S YOUR DADDY") or message.content.upper().startswith("WHO IS YOUR DADDY"):
         await client.send_message(message.channel, "Armin Senpai")
+    # Server Info
+    # if message.content.upper() == "+SERVER":
+    #     await client.send_message(message.channel, message.server.name)
+    await client.process_commands(message)
 
 client.run("")
