@@ -10,7 +10,14 @@ Modified Commands:
  a) Modified data entry method, now allows decimals to be enterred.
  b) Moved the conversion functions to a seperate file stored in a /lbry/ folder, which is imported into the main bot.py.
 _____________________________________________________________________________
-Main Project moved to new folder, "/execution folder"
+Other Changes:
+- Main Project moved to new folder, "/execution folder"
+_____________________________________________________________________________
+Date 04/03/2018
+
+Total hours spent learning python: 54
+
+Total days spend learning python: 9
 
 # Update 3, 03/03/2018, Version 2 Released!
 Version two released.
