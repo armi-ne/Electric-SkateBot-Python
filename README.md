@@ -1,3 +1,17 @@
+# Update 3.1, 04/03/2018
+_____________________________________________________________________________
+Added Commands:
+1) +server
+
+Returns Server Info
+_____________________________________________________________________________
+Modified Commands:
+1) +convert
+ a) Modified data entry method, now allows decimals to be enterred.
+ b) Moved the conversion functions to a seperate file stored in a /lbry/ folder, which is imported into the main bot.py.
+_____________________________________________________________________________
+Main Project moved to new folder, "/execution folder"
+
 # Update 3, 03/03/2018, Version 2 Released!
 Version two released.
 _____________________________________________________________________________
