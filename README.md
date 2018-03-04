@@ -12,6 +12,7 @@ Modified Commands:
 _____________________________________________________________________________
 Other Changes:
 - Main Project moved to new folder, "/execution folder"
+- All old project files moved to new folder called "/Old Files"
 _____________________________________________________________________________
 Date 04/03/2018
 
