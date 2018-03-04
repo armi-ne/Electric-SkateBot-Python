@@ -65,6 +65,7 @@ Other changes:
 - Changed how floats are printed to limit them to 2 decimal places.
 - Added logging.
 - Prints Bot name and ID to console.
+- Added "playing" info with "+help for more info" text.
 _____________________________________________________________________________
 Date 03/03/2018
 
