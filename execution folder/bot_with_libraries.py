@@ -8,6 +8,7 @@ import time
 import string
 import logging
 import lbry.converter as conv
+import lbry.websites as web
 
 logger = logging.getLogger('discord')  # Setting up the logger
 logger.setLevel(logging.INFO)
@@ -43,6 +44,7 @@ async def on_message(message):
     if message.content.upper() == "+HELP":
         embed = discord.Embed(title="Hello %s, here are a list of commands: " % (message.author.name), color=0xFF0000)
         embed.add_field(name="+convert", value="Use \"+convert #Number# #Unit# #Desired Unit#\"｜kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi", inline=False)
+        embed.add_field(name="+brandhelp 1 (/) 2 (/) 3", value="Learn more about the Brand command, Page 1/2/3")
         embed.add_field(name="+reddit", value="Get link to the official esk8 Reddit", inline=False)
         embed.add_field(name="+forum", value="Get link to electric-skateboard.builders", inline=False)
         embed.add_field(name="+server", value="Server Information", inline=False)
@@ -54,6 +56,36 @@ async def on_message(message):
         embed.add_field(name="Moshi Moshi", value="*UserName* Desu", inline=False)
         embed.add_field(name="Ben Pls", value="Everyone knows this one", inline=False)
         embed.add_field(name="Who's your daddy?", value="Want to know who was responsible for the bots birth?", inline=False)
+        await client.send_message(message.channel, embed=embed)
+    # Brand Help 1
+    if message.content.upper() == "+BRANDHELP 1":
+        embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 1: " % (message.author.name), color=0xFF0000)
+        embed.add_field(name="+brand acton", value="Acton", inline=True)
+        embed.add_field(name="+brand arc", value="Arc Boards", inline=True)
+        embed.add_field(name="+brand backfire", value="Backfire", inline=True)
+        embed.add_field(name="+brand boosted", value="Boosted", inline=True)
+        embed.add_field(name="+brand carvon", value="Carvon", inline=True)
+        embed.add_field(name="+brand diyeboard", value="DiyEboard", inline=True)
+        await client.send_message(message.channel, embed=embed)
+    # Brand Help 2
+    if message.content.upper() == "+BRANDHELP 2":
+        embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 2: " % (message.author.name), color=0xFF0000)
+        embed.add_field(name="+brand enertion", value="Enertion", inline=True)
+        embed.add_field(name="+brand evolve", value="Evolve", inline=True)
+        embed.add_field(name="+brand jed", value="Jed Board", inline=True)
+        embed.add_field(name="+brand max", value="Max", inline=True)
+        embed.add_field(name="+brand meepo", value="Meepo", inline=True)
+        embed.add_field(name="+brand metroboard", value="Metroboard", inline=True)
+        await client.send_message(message.channel, embed=embed)
+    # Brand Help 3
+    if message.content.upper() == "+BRANDHELP 3":
+        embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 3: " % (message.author.name), color=0xFF0000)
+        embed.add_field(name="+brand onewheel", value="Onewheel", inline=True)
+        embed.add_field(name="+brand predator", value="Predator", inline=True)
+        embed.add_field(name="+brand pulseboard", value="Pulse Board", inline=True)
+        embed.add_field(name="+brand riptide", value="Riptide", inline=True)
+        embed.add_field(name="+brand trampa", value="Trampa", inline=True)
+        embed.add_field(name="+brand wowgo", value="Wowgo", inline=True)
         await client.send_message(message.channel, embed=embed)
     # Conversion Command
     if message.content.upper().startswith("+CONVERT"):
@@ -74,18 +106,25 @@ async def on_message(message):
     if message.content.upper() == "+FORUM":
         embed = discord.Embed(title="Electric Skateboarding Forum", description="https://www.electric-skateboard.builders/", color=0xFF0000)
         await client.send_message(message.channel, embed=embed)
+    # Brand
+    if message.content.upper().startswith("+BRAND"):
+        brand, desired_brand = message.content.split()
+        website, email, facebook, reddit = web.sitefinder(desired_brand)
+        embed = discord.Embed(title="%s's Info" % str(desired_brand.capitalize()), color=0xFF0000)
+        embed.add_field(name="Website: ", value=website, inline=True)
+        embed.add_field(name="eMail: ", value=email, inline=True)
+        embed.add_field(name="Facebook: ", value=facebook, inline=False)
+        embed.add_field(name="Reddit: ", value=reddit, inline=False)
+        await client.send_message(message.channel, embed=embed)
     # Moshi Moshi
     if message.content.upper() == "MOSHI MOSHI":
-        await client.send_message(message.channel, "{} Desu".format(message.author.name))
+        await client.send_message(message.channel, "{} desu".format(message.author.name))
     # Ben Pls
     if message.content.upper() == "BEN PLS":
         await client.send_message(message.channel, "<:benpls:382239983240478724>")
     # Who's your daddy?
     if message.content.upper().startswith("WHO\'S YOUR DADDY") or message.content.upper().startswith("WHOS YOUR DADDY") or message.content.upper().startswith("WHO’S YOUR DADDY") or message.content.upper().startswith("WHO IS YOUR DADDY"):
         await client.send_message(message.channel, "Armin Senpai")
-    # Server Info
-    # if message.content.upper() == "+SERVER":
-    #     await client.send_message(message.channel, message.server.name)
     await client.process_commands(message)
 
 client.run("")
