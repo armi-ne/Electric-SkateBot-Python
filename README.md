@@ -15,8 +15,7 @@ Modified Commands:
  a) Now when any of the help commands are used, the bot will send the response as a private message to reduce clutter.
 _____________________________________________________________________________
 Other Changes:
-- Added logoes for all companies in the "websites.py" file in order to return their respective logoes when "+brand" command is used
-- 
+- Added logo's for all companies in the "websites.py" file in order to return their respective logoes when "+brand" command is used
 _____________________________________________________________________________
 Date 05/03/2018
 
