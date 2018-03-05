@@ -50,6 +50,7 @@ async def on_message(message):
         embed.add_field(name="+forum", value="Get link to electric-skateboard.builders", inline=False)
         embed.add_field(name="+server", value="Server Information", inline=False)
         embed.add_field(name="+easter eggs", value="Easter Eggs", inline=False)
+        embed.add_field(name="+about", value="Learn more about Electric SkateBot", inline=False)
         await client.send_message(message.author, embed=embed)
     # Easter Eggs
     if message.content.upper() == "+EASTER EGGS":
@@ -118,6 +119,12 @@ async def on_message(message):
         embed.add_field(name="Reddit: ", value=reddit, inline=False)
         embed.set_thumbnail(url=logo)
         await client.send_message(message.channel, embed=embed)
+    # About
+    if message.content.upper() == "+ABOUT":
+        embed = discord.Embed(title="Hello %s, here's more information on the bot: " % (message.author.name), color=0xFF0000)
+        embed.add_field(name="Source Code: ", value="https://github.com/armi-ne/python-tests", inline=False)
+        embed.add_field(name="More Info: ", value="This bot was created by Armin as a project and aide for the Electric Skateboarding channel. Feel free to look at the source code and should you have any suggestions please feel free to message Armin :)", inline=False)
+        await client.send_message(message.author, embed=embed)
     # Moshi Moshi
     if message.content.upper() == "MOSHI MOSHI":
         await client.send_message(message.channel, "{} desu".format(message.author.name))
