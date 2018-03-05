@@ -34,11 +34,11 @@ def speed_converter(a, b, c):  # This is the final step, the formatted unit and 
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
         result = "{0:.2f}".format(int(float(a) * conversion["mph_kph"])) + c
     # KM to MI
-    elif b == "km" and c == "mi":
+    elif b == "km" or b == "kilometers" or b == "kilometres" or c == "kilometer" or c == "kilometre" and c == "mi" or c == "miles" or c == "mile":
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
         result = "{0:.2f}".format(float(a) * conversion["km_mi"]) + c
     # MI to KM
-    elif b == "mi" and c == "km":
+    elif b == "mi" or b == "miles" or b == "mile" and c == "km" or c == "kilometers" or c == "kilmetres" or c == "kilometer" or c == "kilometre":
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
         result = "{0:.2f}".format(float(a) * conversion["mi_km"]) + c
     # Wh
@@ -46,11 +46,11 @@ def speed_converter(a, b, c):  # This is the final step, the formatted unit and 
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
         result = str(a) + "wh should get you: {0:.2f}".format(float(a) * conversion["Wh_mi"]) + " miles, or {0:.2f}".format(float(a) * conversion["Wh_km"]) + " kilometers. Please note that this is an ESTIMATED value."
     # Inch to CM
-    elif b == "inch" and c == "cm":
+    elif b == "inch" or b == "in" and c == "cm" or b == "centimeters" or b == "centimetres" or b == "centimeter" or b == "centimetre":
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
         result = "{0:.2f}".format(float(a) * conversion["inch_cm"]) + " cm"
     # CM to Inch
-    elif b == "cm" and c == "inch":
+    elif b == "cm" or b == "centimeters" or b == "centimetres" or b == "centimeter" or b == "centimetre" and c == "inch" or c == "in":
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
         result = "{0:.2f}".format(float(a) * conversion["cm_inch"]) + " inches"
     # Bad Input
