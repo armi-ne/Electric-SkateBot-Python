@@ -23,7 +23,7 @@ Other Changes:
 _____________________________________________________________________________
 Date 05/03/2018
 
-Total hours spent learning python: 60
+Total hours spent learning python: 61
 
 Total days spend learning python: 10
 
