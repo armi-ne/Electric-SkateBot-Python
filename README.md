@@ -1,3 +1,22 @@
+# Update 3.3, 05/03/2018
+_____________________________________________________________________________
+Added Commands:
+1) N/A
+_____________________________________________________________________________
+Modified Commands:
+1) +brand
+ 
+ a) Now the +brand embed output will include brand logo as "thumbnail"
+_____________________________________________________________________________
+Other Changes:
+- Added logoes for all companies in the "websites.py" file in order to return their respective logoes when "+brand" command is used
+_____________________________________________________________________________
+Date 05/03/2018
+
+Total hours spent learning python: 60
+
+Total days spend learning python: 10
+
 # Update 3.2, 05/03/2018
 _____________________________________________________________________________
 Added Commands:
