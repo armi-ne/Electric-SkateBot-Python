@@ -16,6 +16,10 @@ Modified Commands:
 _____________________________________________________________________________
 Other Changes:
 - Added logo's for all companies in the "websites.py" file in order to return their respective logoes when "+brand" command is used
+
+- In "converter.py, fixed the #wh converter (used to return an error)
+
+- Modified the converter to accept "miles", "mile", "kilometers", "kilometres", "kilometer", "kilometre", "centimeters", "centimetre", "centimeter" and "centimetres"
 _____________________________________________________________________________
 Date 05/03/2018
 
