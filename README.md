@@ -10,6 +10,7 @@ Returns Brand information formatted via embed, includes "Website", "eMail", "Fac
 _____________________________________________________________________________
 Modified Commands:
 1) +help
+ 
  a) Added the +brandhelp commands.
 _____________________________________________________________________________
 Other Changes:
@@ -30,7 +31,9 @@ Returns Server Info
 _____________________________________________________________________________
 Modified Commands:
 1) +convert
+ 
  a) Modified data entry method, now allows decimals to be enterred.
+ 
  b) Moved the conversion functions to a seperate file stored in a /lbry/ folder, which is imported into the main bot.py.
 _____________________________________________________________________________
 Other Changes:
