@@ -10,6 +10,7 @@ import logging
 import lbry.converter as conv
 import lbry.websites as web
 
+
 logger = logging.getLogger('discord')  # Setting up the logger
 logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
@@ -49,14 +50,14 @@ async def on_message(message):
         embed.add_field(name="+forum", value="Get link to electric-skateboard.builders", inline=False)
         embed.add_field(name="+server", value="Server Information", inline=False)
         embed.add_field(name="+easter eggs", value="Easter Eggs", inline=False)
-        await client.send_message(message.channel, embed=embed)
+        await client.send_message(message.author, embed=embed)
     # Easter Eggs
     if message.content.upper() == "+EASTER EGGS":
         embed = discord.Embed(title="Hello %s, here are a list of easter eggs: " % (message.author.name), color=0xFF0000)
         embed.add_field(name="Moshi Moshi", value="*UserName* Desu", inline=False)
         embed.add_field(name="Ben Pls", value="Everyone knows this one", inline=False)
         embed.add_field(name="Who's your daddy?", value="Want to know who was responsible for the bots birth?", inline=False)
-        await client.send_message(message.channel, embed=embed)
+        await client.send_message(message.author, embed=embed)
     # Brand Help 1
     if message.content.upper() == "+BRANDHELP 1":
         embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 1: " % (message.author.name), color=0xFF0000)
@@ -66,7 +67,7 @@ async def on_message(message):
         embed.add_field(name="+brand boosted", value="Boosted", inline=True)
         embed.add_field(name="+brand carvon", value="Carvon", inline=True)
         embed.add_field(name="+brand diyeboard", value="DiyEboard", inline=True)
-        await client.send_message(message.channel, embed=embed)
+        await client.send_message(message.author, embed=embed)
     # Brand Help 2
     if message.content.upper() == "+BRANDHELP 2":
         embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 2: " % (message.author.name), color=0xFF0000)
@@ -76,7 +77,7 @@ async def on_message(message):
         embed.add_field(name="+brand max", value="Max", inline=True)
         embed.add_field(name="+brand meepo", value="Meepo", inline=True)
         embed.add_field(name="+brand metroboard", value="Metroboard", inline=True)
-        await client.send_message(message.channel, embed=embed)
+        await client.send_message(message.author, embed=embed)
     # Brand Help 3
     if message.content.upper() == "+BRANDHELP 3":
         embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 3: " % (message.author.name), color=0xFF0000)
@@ -86,7 +87,7 @@ async def on_message(message):
         embed.add_field(name="+brand riptide", value="Riptide", inline=True)
         embed.add_field(name="+brand trampa", value="Trampa", inline=True)
         embed.add_field(name="+brand wowgo", value="Wowgo", inline=True)
-        await client.send_message(message.channel, embed=embed)
+        await client.send_message(message.author, embed=embed)
     # Conversion Command
     if message.content.upper().startswith("+CONVERT"):
         convert, input_value, user_input, user_desired = message.content.split(" ")
@@ -109,12 +110,13 @@ async def on_message(message):
     # Brand
     if message.content.upper().startswith("+BRAND"):
         brand, desired_brand = message.content.split()
-        website, email, facebook, reddit = web.sitefinder(desired_brand)
+        website, email, facebook, reddit, logo = web.sitefinder(desired_brand)
         embed = discord.Embed(title="%s's Info" % str(desired_brand.capitalize()), color=0xFF0000)
         embed.add_field(name="Website: ", value=website, inline=True)
         embed.add_field(name="eMail: ", value=email, inline=True)
         embed.add_field(name="Facebook: ", value=facebook, inline=False)
         embed.add_field(name="Reddit: ", value=reddit, inline=False)
+        embed.set_thumbnail(url=logo)
         await client.send_message(message.channel, embed=embed)
     # Moshi Moshi
     if message.content.upper() == "MOSHI MOSHI":
