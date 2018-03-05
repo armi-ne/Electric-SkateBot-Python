@@ -7,9 +7,14 @@ Modified Commands:
 1) +brand
  
  a) Now the +brand embed output will include brand logo as "thumbnail"
+
+2) +help, +brandhelp 1, +brandhelp 2, +brandhelp 3, +easter eggs
+
+ a) Now when any of the help commands are used, the bot will send the response as a private message to reduce clutter.
 _____________________________________________________________________________
 Other Changes:
 - Added logoes for all companies in the "websites.py" file in order to return their respective logoes when "+brand" command is used
+- 
 _____________________________________________________________________________
 Date 05/03/2018
 
