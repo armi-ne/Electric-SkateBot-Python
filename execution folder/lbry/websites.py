@@ -1,5 +1,4 @@
 # Function for differentiating websites of eboard companies
-from PIL import Image
 
 
 def sitefinder(a):
