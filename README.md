@@ -1,7 +1,9 @@
 # Update 3.3, 05/03/2018
 _____________________________________________________________________________
 Added Commands:
-1) N/A
+1) +about
+
+Displays information about the bot, including a link to the github repo
 _____________________________________________________________________________
 Modified Commands:
 1) +brand
