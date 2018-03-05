@@ -41,10 +41,10 @@ def speed_converter(a, b, c):  # This is the final step, the formatted unit and 
     elif b == "mi" and c == "km":
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
         result = "{0:.2f}".format(float(a) * conversion["mi_km"]) + c
-    # kWh
+    # Wh
     elif b == "wh":
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
-        result = a + "wh should get you: {0:.2f}".format(float(a) * conversion["Wh_mi"]) + " miles, or {0:.2f}".format(float(a) * conversion["Wh_km"]) + " kilometers. Please note that this is an ESTIMATED value."
+        result = str(a) + "wh should get you: {0:.2f}".format(float(a) * conversion["Wh_mi"]) + " miles, or {0:.2f}".format(float(a) * conversion["Wh_km"]) + " kilometers. Please note that this is an ESTIMATED value."
     # Inch to CM
     elif b == "inch" and c == "cm":
         print("Value: " + str(a) + ", " + "Original Unit: " + b + ", " + "Desired Unit: " + c)
