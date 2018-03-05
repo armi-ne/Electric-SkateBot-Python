@@ -1,3 +1,26 @@
+# Update 3.2, 05/03/2018
+_____________________________________________________________________________
+Added Commands:
+1) +brand
+2) +brandhelp 1
+3) +brandhelp 2
+4) +brandhelp 3
+
+Returns Brand information formatted via embed, includes "Website", "eMail", "Facebook" and "Reddit"
+_____________________________________________________________________________
+Modified Commands:
+1) +help
+ a) Added the +brandhelp commands.
+_____________________________________________________________________________
+Other Changes:
+- Created new library called websites, includes information on each brand which has it's own channel on the server.
+_____________________________________________________________________________
+Date 05/03/2018
+
+Total hours spent learning python: 57
+
+Total days spend learning python: 10
+
 # Update 3.1, 04/03/2018
 _____________________________________________________________________________
 Added Commands:
