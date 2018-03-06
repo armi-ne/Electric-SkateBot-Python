@@ -1,3 +1,31 @@
+# Update 3.4, 06/03/2018
+_____________________________________________________________________________
+Added Commands:
+1) +battery
+2) +batteryhelp
+
+"+battery" takes 4 inputs and returns an "embed" formatted message with 8 total values.
+
+"+batteryhelp" pm's user a messsage detailing how to use the "+battery" command
+_____________________________________________________________________________
+Modified Commands:
+1) +about
+ 
+ a) Added a "mentions" field crediting Jinra, Weinbee, Neozeon and Howser for their help
+
+2) +help, +easter eggs
+
+ a) Alphabetically sorted
+_____________________________________________________________________________
+Other Changes:
+- Added new "battery.py" library in the "lbry" folder
+_____________________________________________________________________________
+Date 05/03/2018
+
+Total hours spent learning python: 64
+
+Total days spend learning python: 11
+
 # Update 3.3.1, 06/03/2018
 _____________________________________________________________________________
 Other Changes:
