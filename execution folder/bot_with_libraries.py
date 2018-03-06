@@ -64,8 +64,8 @@ async def on_message(message):
     # Battery Help
     if message.content.upper() == "+BATTERYHELP":
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (message.author.name), color=0xFF0000)
-        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 4 pieces of information. 1) Parallel count. 2) Series count. 3) Amp hours per cell. 4) Nominal voltage per cell (for li-ion 3.6 is best)")
-        embed.add_field(name="Command Format:", value="+battery #parallel value# #series value# #amp hour value# #nominal voltage value#")
+        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 4 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell. 4) Nominal voltage per cell (for li-ion 3.6 is best)")
+        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value# #Nominal Voltage value#")
         await client.send_message(message.author, embed=embed)
     # Brand Help 1
     if message.content.upper() == "+BRANDHELP 1":
@@ -113,8 +113,8 @@ async def on_message(message):
         command, in_a, in_b, in_c, in_d = message.content.split(" ")
         nom_volt, tot_ah, tot_wh, rang_km, rang_mi = batt.executer(in_a, in_b, in_c, in_d)
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
-        embed.add_field(name="Input Parallel:", value="{0:.2f}".format(float(in_a)) + "p", inline=True)
-        embed.add_field(name="Input Series:", value="{0:.2f}".format(float(in_b)) + "s", inline=True)
+        embed.add_field(name="Input Series:", value="{0:.2f}".format(float(in_a)) + "s", inline=True)
+        embed.add_field(name="Input Parallel:", value="{0:.2f}".format(float(in_b)) + "p", inline=True)
         embed.add_field(name="Input Amp Hours:", value="{0:.2f}".format(float(in_c)) + "ah", inline=True)
         embed.add_field(name="Input Nominal Voltage:", value="{0:.2f}".format(float(in_d)) + "v", inline=True)
         embed.add_field(name="Nominal Voltage of Pack:", value="{0:.2f}".format(float(nom_volt)) + "v", inline=False)
