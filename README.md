@@ -19,6 +19,8 @@ Modified Commands:
 _____________________________________________________________________________
 Other Changes:
 - Added new "battery.py" library in the "lbry" folder
+
+- Removed colons at the end of every title for commands.
 _____________________________________________________________________________
 Date 05/03/2018
 
