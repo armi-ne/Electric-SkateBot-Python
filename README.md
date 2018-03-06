@@ -1,3 +1,10 @@
+# Update 3.4.1, 06/03/2018
+_____________________________________________________________________________
+Other Changes:
+- Modified "+battery" command to take inputs in the order of (S, P, Ah, Volt) instead of (P, S, Ah, Volt)
+
+- Modified the +batteryhelp command to show this change in input
+
 # Update 3.4, 06/03/2018
 _____________________________________________________________________________
 Added Commands:
