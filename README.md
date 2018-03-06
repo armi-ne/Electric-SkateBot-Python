@@ -1,3 +1,8 @@
+# Update 3.3.1, 06/03/2018
+_____________________________________________________________________________
+Other Changes:
+- Fixed the converter, added parentheses for each conversion pair in order to return an overall True or False answer, instead of a chain of "or"'s which resulted in pairs which shouldn't be matched being input as correct pairs, therefore returning an incorrect answer.
+
 # Update 3.3, 05/03/2018
 _____________________________________________________________________________
 Added Commands:
