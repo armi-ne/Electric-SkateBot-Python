@@ -1,3 +1,8 @@
+# Update 3.4.2, 06/03/2018
+_____________________________________________________________________________
+Other Changes:
+ - Added a wiki page showing each command accompanied by an image of the bots response
+
 # Update 3.4.1, 06/03/2018
 _____________________________________________________________________________
 Other Changes:
