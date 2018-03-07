@@ -1,3 +1,7 @@
+# News Announcement, 07/03/2018
+_____________________________________________________________________________
+After receiving feedback on the bot and code, I've decided it would be for the best to stop adding any new features for the time being and instead create a new branch with all the good changes that have been advised.
+
 # Update 3.4.2, 06/03/2018
 _____________________________________________________________________________
 Other Changes:
