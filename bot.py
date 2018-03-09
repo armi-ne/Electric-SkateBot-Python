@@ -28,18 +28,6 @@ async def on_ready():
 
 
 @client.command(pass_context=True)
-async def convert(ctx, inputval, inputuni, to_text, desireduni):
-    upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
-    answer = conv.executer(float(upcase1), upcase2, upcase4)
-    embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
-    embed.add_field(name="Input Value:", value=inputval, inline=True)
-    embed.add_field(name="Input Unit:", value=inputuni, inline=True)
-    embed.add_field(name="Output Unit:", value=desireduni, inline=False)
-    embed.add_field(name="Result", value=answer, inline=False)
-    await client.say(embed=embed)
-
-
-@client.command(pass_context=True)
 async def brand(ctx, brandin):
     upcase1 = brandin.upper()
     website, email, facebook, reddit, thumbnail = brand_.brandfinder(upcase1)
@@ -52,4 +40,15 @@ async def brand(ctx, brandin):
     await client.say(embed=embed)
 
 
-client.run("")
+@client.command(pass_context=True)
+async def convert(ctx, inputval, inputuni, to_text, desireduni):
+    upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
+    answer = conv.executer(float(upcase1), upcase2, upcase4)
+    embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
+    embed.add_field(name="Input Value:", value=inputval, inline=True)
+    embed.add_field(name="Input Unit:", value=inputuni, inline=True)
+    embed.add_field(name="Output Unit:", value=desireduni, inline=False)
+    embed.add_field(name="Result", value=answer, inline=False)
+    await client.say(embed=embed)
+
+client.run("NDE3Mzg2MDM5NjkxMTgyMDgw.DXnTvg.s1iUUrbwKHQGJ2YJgJdbvHHituc")
