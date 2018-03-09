@@ -36,7 +36,7 @@ async def convert(ctx, inputval, inputuni, to_text, desireduni):
     embed.add_field(name="Input Unit:", value=inputuni, inline=True)
     embed.add_field(name="Output Unit:", value=desireduni, inline=False)
     embed.add_field(name="Result", value=answer, inline=False)
-    await client.say(embed=embed)   
+    await client.say(embed=embed)
 
 
 @client.command(pass_context=True)
