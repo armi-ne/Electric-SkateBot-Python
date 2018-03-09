@@ -1,5 +1,5 @@
 def executer(inS, inP, inAh, nomvpc):
-    totnomv = inS * nomvpc
+    totnomv = float(inS) * float(nomvpc)
     totah, totwh, totrkm, totrmi = main_function(inS, inP, inAh, totnomv)
     return totah, totwh, totrkm, totrmi, totnomv
 
