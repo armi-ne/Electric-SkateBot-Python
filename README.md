@@ -219,6 +219,3 @@ This new version of the converter has been re-written, only retaining around 5 l
 #2: Made after 48% completion of CodeCademy Course, total hours spent learning python: 33
 
 Inspired by: Test V2 and Jinra's Version. Both of which will be uploaded for reference.
-
-# Python-tests
-Here I'll be testing out code for my work in progress python esk8 bot
