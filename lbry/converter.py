@@ -11,15 +11,8 @@ def main_converter(value, original, desired):
     if original == "WH":
         resultkm = float(value) * conversion_dict["Wh_km"]
         resultmi = float(value) * conversion_dict["Wh_mi"]
-        # printthis = "{0:.2f}".format(float(value)) + " watt hours should get you: " + "{0:.2f}".format(resultkm) + "KM or " + "{0:.2f}".format(resultmi) + "MI"
         printthis = "{0:.2f} watt hours should get you: ".format(float(value)) + "{0:.2f}KM or ".format(resultkm) + "{0:.2f}MI".format(resultmi)
     else:
         result = float(value) * conversion_dict[original]
         printthis = "{0:.2f}".format(result) + desired
     return printthis
-
-
-# Testing to see if code works
-inputvalue, inputunit, to_text, desiredunit = input("please input your values ").split(" ")
-
-print(executer(inputvalue.upper(), inputunit.upper(), desiredunit.upper()))
