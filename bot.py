@@ -1,20 +1,10 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import bot
-import logging
 import lbry.battery as batt
 import lbry.brand as brand_
 import lbry.converter as conv
 
-Client = discord.Client()
-client = commands.Bot(command_prefix="+")
-client.remove_command("help")
-
-logger = logging.getLogger('discord')  # Setting up the logger
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
 Client = discord.Client()
 client = commands.Bot(command_prefix="+")
 client.remove_command("help")
@@ -27,7 +17,99 @@ async def on_ready():
     print("My ID is: " + client.user.id)
 
 
+@client.event  # Help Commands
+async def on_message(message):
+    # About
+    if message.content.upper() == "+ABOUT":
+        embed = discord.Embed(title="Hello %s, here's more information on the bot" % (message.author.name), color=0xFF0000)
+        embed.add_field(name="Source Code: ", value="https://github.com/armi-ne/python-tests", inline=False)
+        embed.add_field(name="More Info: ", value="This bot was created by Armin as a project and aide for the Electric Skateboarding channel. Feel free to look at the source code and should you have any suggestions please feel free to message Armin :)", inline=False)
+        embed.add_field(name="Mentions", value="Special thanks to Weinbee, Jinra, NeoZeon (helping with code) and Howser (custom logo)", inline=False)
+        await client.send_message(message.author, embed=embed)
+    # Battery Help
+    if message.content.upper() == "+BATTERYHELP":
+        embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (message.author.name), color=0xFF0000)
+        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 4 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell. 4) Nominal voltage per cell (for li-ion 3.6 is best)")
+        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value# #Nominal Voltage value#")
+        await client.send_message(message.author, embed=embed)
+    # Ben Pls
+    if message.content.upper() == "BEN PLS":
+        await client.send_message(message.channel, "<:benpls:382239983240478724>")
+    # Brand Help 1
+    if message.content.upper() == "+BRANDHELP 1":
+        embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 1" % (message.author.name), color=0xFF0000)
+        embed.add_field(name="+brand acton", value="Acton", inline=True)
+        embed.add_field(name="+brand arc", value="Arc Boards", inline=True)
+        embed.add_field(name="+brand backfire", value="Backfire", inline=True)
+        embed.add_field(name="+brand boosted", value="Boosted", inline=True)
+        embed.add_field(name="+brand carvon", value="Carvon", inline=True)
+        embed.add_field(name="+brand diyeboard", value="DiyEboard", inline=True)
+        await client.send_message(message.author, embed=embed)
+    # Brand Help 2
+    if message.content.upper() == "+BRANDHELP 2":
+        embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 2" % (message.author.name), color=0xFF0000)
+        embed.add_field(name="+brand enertion", value="Enertion", inline=True)
+        embed.add_field(name="+brand evolve", value="Evolve", inline=True)
+        embed.add_field(name="+brand jed", value="Jed Board", inline=True)
+        embed.add_field(name="+brand max", value="Max", inline=True)
+        embed.add_field(name="+brand meepo", value="Meepo", inline=True)
+        embed.add_field(name="+brand metroboard", value="Metroboard", inline=True)
+        await client.send_message(message.author, embed=embed)
+    # Brand Help 3
+    if message.content.upper() == "+BRANDHELP 3":
+        embed = discord.Embed(title="Hello %s, here are a list of Brand's Sub-Commands, Page 3" % (message.author.name), color=0xFF0000)
+        embed.add_field(name="+brand onewheel", value="Onewheel", inline=True)
+        embed.add_field(name="+brand predator", value="Predator", inline=True)
+        embed.add_field(name="+brand pulseboard", value="Pulse Board", inline=True)
+        embed.add_field(name="+brand riptide", value="Riptide", inline=True)
+        embed.add_field(name="+brand trampa", value="Trampa", inline=True)
+        embed.add_field(name="+brand wowgo", value="Wowgo", inline=True)
+        await client.send_message(message.author, embed=embed)
+    # Easter Eggs
+    if (message.content.upper() == "+EASTER EGGS" or message.content.upper() == "+EASTER EGG"):
+        embed = discord.Embed(title="Hello %s, here are a list of easter eggs" % (message.author.name), color=0xFF0000)
+        embed.add_field(name="Ben Pls", value="Everyone knows this one", inline=False)
+        embed.add_field(name="Moshi Moshi", value="*UserName* Desu", inline=False)
+        embed.add_field(name="Who's your daddy?", value="Want to know who was responsible for the bots birth?", inline=False)
+        await client.send_message(message.author, embed=embed)
+    # Help
+    if message.content.upper() == "+HELP":
+        embed = discord.Embed(title="Hello %s, here are a list of commands" % (message.author.name), color=0xFF0000)
+        embed.add_field(name="+about", value="Learn more about Electric SkateBot", inline=False)
+        embed.add_field(name="+batteryhelp", value="learn more about the +battery calculator", inline=False)
+        embed.add_field(name="+brandhelp 1 (/) 2 (/) 3", value="Learn more about the Brand command, Page 1/2/3")
+        embed.add_field(name="+convert", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"", inline=False)
+        embed.add_field(name="Available Conversion Pairs", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi", inline=False)
+        embed.add_field(name="+easter eggs", value="Easter Eggs", inline=False)
+        embed.add_field(name="+forum", value="Get link to electric-skateboard.builders", inline=False)
+        embed.add_field(name="+reddit", value="Get link to the official esk8 Reddit", inline=False)
+        embed.add_field(name="+server", value="Server Information", inline=False)
+        await client.send_message(message.author, embed=embed)
+    # Moshi Moshi
+    if message.content.upper() == "MOSHI MOSHI":
+        await client.send_message(message.channel, "{} desu".format(message.author.name))
+    # Who's your daddy?
+    if (message.content.upper().startswith("WHO\'S YOUR DADDY") or message.content.upper().startswith("WHOS YOUR DADDY") or message.content.upper().startswith("WHO’S YOUR DADDY") or message.content.upper().startswith("WHO IS YOUR DADDY")):
+        await client.send_message(message.channel, "Armin Senpai")
+    await client.process_commands(message)
+
+
 @client.command(pass_context=True)
+async def battery(ctx, series, parallel, amphour, nominal_volt):
+    total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour, nominal_volt)
+    embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
+    embed.add_field(name="Input Series:", value=series + "s", inline=True)
+    embed.add_field(name="Input Parallel:", value=parallel + "p", inline=True)
+    embed.add_field(name="Input Amp Hours:", value="{0:.2}".format(float(amphour)) + "ah", inline=True)
+    embed.add_field(name="Input Nominal Voltage:", value="{0:.2f}".format(float(nominal_volt)) + "v", inline=True)
+    embed.add_field(name="Nominal Voltage of Pack:", value="{0:.2f}".format(float(total_nominal_voltage)) + "v", inline=False)
+    embed.add_field(name="Total Amp Hours:", value="{0:.2f}".format(float(total_amphour)) + "ah", inline=False)
+    embed.add_field(name="Total Watt Hours:", value="{0:.2f}".format(float(total_watthour)) + "wh", inline=False)
+    embed.add_field(name="Estimated Ranges:", value="{0:.2f}".format(float(total_range_km)) + "km, or " + "{0:.2f}".format(float(total_range_mi)) + "mi")
+    await client.say(embed=embed)
+
+
+@client.command(pass_context=True)  # +brand
 async def brand(ctx, brandin):
     upcase1 = brandin.upper()
     website, email, facebook, reddit, thumbnail = brand_.brandfinder(upcase1)
@@ -40,7 +122,7 @@ async def brand(ctx, brandin):
     await client.say(embed=embed)
 
 
-@client.command(pass_context=True)
+@client.command(pass_context=True)  # +convert
 async def convert(ctx, inputval, inputuni, to_text, desireduni):
     upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
     answer = conv.executer(float(upcase1), upcase2, upcase4)
@@ -51,4 +133,4 @@ async def convert(ctx, inputval, inputuni, to_text, desireduni):
     embed.add_field(name="Result", value=answer, inline=False)
     await client.say(embed=embed)
 
-client.run("NDE3Mzg2MDM5NjkxMTgyMDgw.DXnTvg.s1iUUrbwKHQGJ2YJgJdbvHHituc")
+client.run("")
