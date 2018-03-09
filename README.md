@@ -1,3 +1,23 @@
+# Update 3.5, 09/03/2018
+_____________________________________________________________________________
+Other Changes:
+ 1) Rewritten files
+  - Brand
+  - Battery
+  - Converter
+  - Bot.py
+ 2) Details
+  - Brand has been shortened and values have all been moved into a list within a dictionary.
+  - Battery had had it's variables changed and some calculations reworded.
+  - Converter has had all of its code re-written and now uses all the variables.
+  - Bot.py had been re-written to make more use of client.command instead of client.event, although both are still used.
+_____________________________________________________________________________
+Date 09/03/2018
+
+Total hours spent learning python: 74
+
+Total days spend learning python: 12
+
 # News Announcement, 07/03/2018
 _____________________________________________________________________________
 After receiving feedback on the bot and code, I've decided it would be for the best to stop adding any new features for the time being and instead create a new branch with all the good changes that have been advised.
