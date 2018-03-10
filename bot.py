@@ -133,4 +133,14 @@ async def convert(ctx, inputval, inputuni, to_text, desireduni):
     embed.add_field(name="Result", value=answer, inline=False)
     await client.say(embed=embed)
 
+
+@client.command(pass_context=True)
+async def server(ctx):
+    embed = discord.Embed(name="{}'s info".format(ctx.message.server.name), description="", color=0xFF0000)
+    embed.add_field(name="Name", value=ctx.message.server.name, inline=True)
+    embed.add_field(name="Number of e-Boarders", value=(len(ctx.message.server.members) - 3))
+    embed.add_field(name="Number of Channels", value=(len(ctx.message.server.channels)))
+    embed.set_thumbnail(url=ctx.message.server.icon_url)
+    await client.say(embed=embed)
+
 client.run("")
