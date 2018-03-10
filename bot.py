@@ -66,7 +66,7 @@ async def on_message(message):
         embed.add_field(name="+brand wowgo", value="Wowgo", inline=True)
         await client.send_message(message.author, embed=embed)
     # Easter Eggs
-    if (message.content.upper() == "+EASTER EGGS" or message.content.upper() == "+EASTER EGG"):
+    if (message.content.upper() == "+EASTER EGGS" or message.content.upper() == "+EASTER EGG" or message.content.upper() == "+EASTEREGG" or message.content.upper() == "+EASTEREGGS"):
         embed = discord.Embed(title="Hello %s, here are a list of easter eggs" % (message.author.name), color=0xFF0000)
         embed.add_field(name="Ben Pls", value="Everyone knows this one", inline=False)
         embed.add_field(name="Moshi Moshi", value="*UserName* Desu", inline=False)
