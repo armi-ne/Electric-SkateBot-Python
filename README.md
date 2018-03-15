@@ -1,23 +1,32 @@
 # Update 3.6, 15/03/2018
 _____________________________________________________________________________
+Added Commands:
+1) +(Mention) Sophia (Easter egg, request by Jinra)
+
+"@Sofu" should now return a new easter egg.
+_____________________________________________________________________________
 Modified Commands:
 1) +battery
 
- a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab.
+ a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab. (1)
  
  b) Modified input length to 2 characters, now only accepts values from 0-99 for each field else returns customised error message.
  
  c) Modified output for "input amphour" since before if you input an integer with 2 characters, such as 99 it would output "9.9e+01ah" instead of "99.0ah"
  
  d) Added an extra elif check, in order to ensure that IF the 4 values are "None", then the user will receive the help PM, but if they do have values and don't meet the conditions of having >=2 characters, they will receive the customised error message.
+ 
+ e) Added "CodeBlock", explained in "more info" below. (3)
 
 2) +brand
 
- a) Modified this in a similar way to +battery and +convert, however the if check is different, explained below.
+ a) Modified this in a similar way to +battery and +convert, however the if check is different, explained below. (1)
 
 3) +convert
 
- a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab.
+ a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab. (2)
+ 
+ b) Added "CodeBlock", explained in "more info" below. (3)
 
 4) +help
  
@@ -56,6 +65,10 @@ async def test(ctx, var1=None, var2=None):
   async def brand(ctx, brandin=None):
  
      if brandin is not None:
+
+3) CodeBlock.
+
+ a) In order to ensure only the required number of arguments are set for commands I've added a final parameter called "codeblock" which will in turn disable the command from continuing should the user input more than the required number.
 
 _____________________________________________________________________________
 Date 15/03/2018
