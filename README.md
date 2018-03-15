@@ -8,6 +8,8 @@ Modified Commands:
  b) Modified input length to 2 characters, now only accepts values from 0-99 for each field else returns customised error message.
  
  c) Modified output for "input amphour" since before if you input an integer with 2 characters, such as 99 it would output "9.9e+01ah" instead of "99.0ah"
+ 
+ d) Added an extra elif check, in order to ensure that IF the 4 values are "None", then the user will receive the help PM, but if they do have values and don't meet the conditions of having >=2 characters, they will receive the customised error message.
 
 2) +brand
 
