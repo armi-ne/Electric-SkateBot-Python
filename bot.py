@@ -4,6 +4,7 @@ from discord.ext.commands import bot
 import lbry.battery as batt
 import lbry.brand as brand_
 import lbry.converter as conv
+import lbry.easter_eggs as eastereggs
 
 Client = discord.Client()
 client = commands.Bot(command_prefix="+")
@@ -27,7 +28,7 @@ async def on_message(message):
         embed.add_field(name="Mentions", value="Special thanks to Weinbee, Jinra, NeoZeon (helping with code) and Howser (custom logo)", inline=False)
         await client.send_message(message.author, embed=embed)
     # Ben Pls
-    if message.content.upper() == "BEN PLS":
+    if message.content.upper() in eastereggs.ben_pls:
         await client.send_message(message.channel, "<:benpls:382239983240478724>")
     # Brand Help 1
     if message.content.upper() == "+BRANDHELP 1":
@@ -79,10 +80,10 @@ async def on_message(message):
         embed.add_field(name="+server", value="Server Information", inline=False)
         await client.send_message(message.author, embed=embed)
     # Moshi Moshi
-    if message.content.upper() == "MOSHI MOSHI":
-        await client.send_message(message.channel, "{} desu".format(message.author.name))
+    if message.content.upper() in eastereggs.moshi_moshi:
+        await client.send_message(message.channel, "Electric Skatebot Desu, {} san".format(message.author.name))
     # Who's your daddy?
-    if (message.content.upper().startswith("WHO\'S YOUR DADDY") or message.content.upper().startswith("WHOS YOUR DADDY") or message.content.upper().startswith("WHO’S YOUR DADDY") or message.content.upper().startswith("WHO IS YOUR DADDY")):
+    if message.content.upper() in eastereggs.whos_your_daddy:
         await client.send_message(message.channel, "Armin Senpai")
     await client.process_commands(message)
 
