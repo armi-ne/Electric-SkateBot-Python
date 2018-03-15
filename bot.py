@@ -26,12 +26,6 @@ async def on_message(message):
         embed.add_field(name="More Info: ", value="This bot was created by Armin as a project and aide for the Electric Skateboarding channel. Feel free to look at the source code and should you have any suggestions please feel free to message Armin :)", inline=False)
         embed.add_field(name="Mentions", value="Special thanks to Weinbee, Jinra, NeoZeon (helping with code) and Howser (custom logo)", inline=False)
         await client.send_message(message.author, embed=embed)
-    # Battery Help
-    if message.content.upper() == "+BATTERYHELP":
-        embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (message.author.name), color=0xFF0000)
-        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 4 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell. 4) Nominal voltage per cell (for li-ion 3.6 is best)")
-        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value# #Nominal Voltage value#")
-        await client.send_message(message.author, embed=embed)
     # Ben Pls
     if message.content.upper() == "BEN PLS":
         await client.send_message(message.channel, "<:benpls:382239983240478724>")
@@ -76,10 +70,9 @@ async def on_message(message):
     if message.content.upper() == "+HELP":
         embed = discord.Embed(title="Hello %s, here are a list of commands" % (message.author.name), color=0xFF0000)
         embed.add_field(name="+about", value="Learn more about Electric SkateBot", inline=False)
-        embed.add_field(name="+batteryhelp", value="learn more about the +battery calculator", inline=False)
-        embed.add_field(name="+brandhelp 1 (/) 2 (/) 3", value="Learn more about the Brand command, Page 1/2/3")
-        embed.add_field(name="+convert", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"", inline=False)
-        embed.add_field(name="Available Conversion Pairs", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi", inline=False)
+        embed.add_field(name="+battery", value="learn more about the +battery calculator", inline=False)
+        embed.add_field(name="+brand", value="Learn more about the Brand command")
+        embed.add_field(name="+convert", value="learn more about the +convert conversion tool", inline=False)
         embed.add_field(name="+easter eggs", value="Easter Eggs", inline=False)
         embed.add_field(name="+forum", value="Get link to electric-skateboard.builders", inline=False)
         embed.add_field(name="+reddit", value="Get link to the official esk8 Reddit", inline=False)
@@ -95,43 +88,61 @@ async def on_message(message):
 
 
 @client.command(pass_context=True)
-async def battery(ctx, series, parallel, amphour, nominal_volt):
-    total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour, nominal_volt)
-    embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
-    embed.add_field(name="Input Series:", value=series + "s", inline=True)
-    embed.add_field(name="Input Parallel:", value=parallel + "p", inline=True)
-    embed.add_field(name="Input Amp Hours:", value="{0:.2}".format(float(amphour)) + "ah", inline=True)
-    embed.add_field(name="Input Nominal Voltage:", value="{0:.2f}".format(float(nominal_volt)) + "v", inline=True)
-    embed.add_field(name="Nominal Voltage of Pack:", value="{0:.2f}".format(float(total_nominal_voltage)) + "v", inline=False)
-    embed.add_field(name="Total Amp Hours:", value="{0:.2f}".format(float(total_amphour)) + "ah", inline=False)
-    embed.add_field(name="Total Watt Hours:", value="{0:.2f}".format(float(total_watthour)) + "wh", inline=False)
-    embed.add_field(name="Estimated Ranges:", value="{0:.2f}".format(float(total_range_km)) + "km, or " + "{0:.2f}".format(float(total_range_mi)) + "mi")
-    await client.say(embed=embed)
+async def battery(ctx, series=None, parallel=None, amphour=None, nominal_volt=None):
+    if all((series, parallel, amphour, nominal_volt)):
+        total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour, nominal_volt)
+        embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
+        embed.add_field(name="Input Series:", value=series + "s", inline=True)
+        embed.add_field(name="Input Parallel:", value=parallel + "p", inline=True)
+        embed.add_field(name="Input Amp Hours:", value="{0:.2}".format(float(amphour)) + "ah", inline=True)
+        embed.add_field(name="Input Nominal Voltage:", value="{0:.2f}".format(float(nominal_volt)) + "v", inline=True)
+        embed.add_field(name="Nominal Voltage of Pack:", value="{0:.2f}".format(float(total_nominal_voltage)) + "v", inline=False)
+        embed.add_field(name="Total Amp Hours:", value="{0:.2f}".format(float(total_amphour)) + "ah", inline=False)
+        embed.add_field(name="Total Watt Hours:", value="{0:.2f}".format(float(total_watthour)) + "wh", inline=False)
+        embed.add_field(name="Estimated Ranges:", value="{0:.2f}".format(float(total_range_km)) + "km, or " + "{0:.2f}".format(float(total_range_mi)) + "mi")
+        await client.say(embed=embed)
+    else:
+        embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 4 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell. 4) Nominal voltage per cell (for li-ion 3.6 is best)")
+        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value# #Nominal Voltage value#")
+        await client.send_message(ctx.message.author, embed=embed)
 
 
 @client.command(pass_context=True)  # +brand
-async def brand(ctx, brandin):
-    upcase1 = brandin.upper()
-    website, email, facebook, reddit, thumbnail = brand_.brandfinder(upcase1)
-    embed = discord.Embed(title="%s's Info" % brandin.capitalize(), color=0xFF0000)
-    embed.add_field(name="Website: ", value=website, inline=True)
-    embed.add_field(name="eMail: ", value=email, inline=True)
-    embed.add_field(name="Facebook: ", value=facebook, inline=False)
-    embed.add_field(name="Reddit: ", value=reddit, inline=False)
-    embed.set_thumbnail(url=thumbnail)
-    await client.say(embed=embed)
+async def brand(ctx, brandin=None):
+    if brandin is not None:
+        upcase1 = brandin.upper()
+        website, email, facebook, reddit, thumbnail = brand_.brandfinder(upcase1)
+        embed = discord.Embed(title="%s's Info" % brandin.capitalize(), color=0xFF0000)
+        embed.add_field(name="Website: ", value=website, inline=True)
+        embed.add_field(name="eMail: ", value=email, inline=True)
+        embed.add_field(name="Facebook: ", value=facebook, inline=False)
+        embed.add_field(name="Reddit: ", value=reddit, inline=False)
+        embed.set_thumbnail(url=thumbnail)
+        await client.say(embed=embed)
+    else:
+        embed = discord.Embed(title="Hello %s, here's an explanation of how the +brand command works" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="Command Format: ", value="+brand #brand#")
+        embed.add_field(name="List of Brands Available: ", value="Please use +brandhelp 1/2/3 for the corresponding pages of brands we have available")
+        await client.send_message(ctx.message.author, embed=embed)
 
 
 @client.command(pass_context=True)  # +convert
-async def convert(ctx, inputval, inputuni, to_text, desireduni):
-    upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
-    answer = conv.executer(float(upcase1), upcase2, upcase4)
-    embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
-    embed.add_field(name="Input Value:", value=inputval, inline=True)
-    embed.add_field(name="Input Unit:", value=inputuni, inline=True)
-    embed.add_field(name="Output Unit:", value=desireduni, inline=False)
-    embed.add_field(name="Result", value=answer, inline=False)
-    await client.say(embed=embed)
+async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=None):
+    if all((inputval, inputuni, to_text, desireduni)):
+        upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
+        answer = conv.executer(float(upcase1), upcase2, upcase4)
+        embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
+        embed.add_field(name="Input Value:", value=inputval, inline=True)
+        embed.add_field(name="Input Unit:", value=inputuni, inline=True)
+        embed.add_field(name="Output Unit:", value=desireduni, inline=False)
+        embed.add_field(name="Result", value=answer, inline=False)
+        await client.say(embed=embed)
+    else:
+        embed = discord.Embed(title="Hello %s, here's an explanation of how the +convert command works" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="Command Format: ", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"")
+        embed.add_field(name="Current Conversion Pairs: ", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi")
+        await client.send_message(ctx.message.author, embed=embed)
 
 
 @client.command(pass_context=True)
