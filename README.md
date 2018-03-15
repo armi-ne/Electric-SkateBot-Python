@@ -4,6 +4,10 @@ Modified Commands:
 1) +battery
 
  a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab.
+ 
+ b) Modified input length to 2 characters, now only accepts values from 0-99 for each field else returns customised error message.
+ 
+ c) Modified output for "input amphour" since before if you input an integer with 2 characters, such as 99 it would output "9.9e+01ah" instead of "99.0ah"
 
 2) +brand
 
