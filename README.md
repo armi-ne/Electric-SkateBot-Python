@@ -33,7 +33,7 @@ async def test(ctx, var1=None, var2=None):
         await client.say("Please can you input 2 values")
         
 _____________________________________________________________________________
-Date 05/03/2018
+Date 15/03/2018
 
 Total hours spent learning python: 98
 
