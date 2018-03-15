@@ -111,8 +111,8 @@ async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None)
         await client.say(embed=embed)
     elif series == parallel == amphour is None:
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
-        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 4 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell. 4) Nominal voltage per cell (for li-ion 3.6 is best)")
-        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value# #Nominal Voltage value#")
+        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
+        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
         await client.send_message(ctx.message.author, embed=embed)
     elif ((len(series) <= 2 and len(parallel) <= 2 and len(amphour) <= 2) is False):
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
@@ -120,8 +120,8 @@ async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None)
         await client.say(embed=embed)
     else:
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
-        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 4 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell. 4) Nominal voltage per cell (for li-ion 3.6 is best)")
-        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value# #Nominal Voltage value#")
+        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
+        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
         await client.send_message(ctx.message.author, embed=embed)
 
 
