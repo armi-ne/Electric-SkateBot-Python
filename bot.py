@@ -65,6 +65,7 @@ async def on_message(message):
         embed = discord.Embed(title="Hello %s, here are a list of easter eggs" % (message.author.name), color=0xFF0000)
         embed.add_field(name="Ben Pls", value="Everyone knows this one", inline=False)
         embed.add_field(name="Moshi Moshi", value="*UserName* Desu", inline=False)
+        embed.add_field(name="Tag Sophia", value="You can thank Jinra for this", inline=False)
         embed.add_field(name="Who's your daddy?", value="Want to know who was responsible for the bots birth?", inline=False)
         await client.send_message(message.author, embed=embed)
     # Help
@@ -82,6 +83,9 @@ async def on_message(message):
     # Moshi Moshi
     if message.content.upper() in eastereggs.moshi_moshi:
         await client.send_message(message.channel, "Electric Skatebot Desu, {} san".format(message.author.name))
+    # Sofu
+    if ("209852808977973250" in message.raw_mentions):
+        await client.send_message(message.channel, "💸 :bird: T W I T T E R  E N G  M O N E Y :bird: 💸")
     # Who's your daddy?
     if message.content.upper() in eastereggs.whos_your_daddy:
         await client.send_message(message.channel, "Armin Senpai")
@@ -89,25 +93,28 @@ async def on_message(message):
 
 
 @client.command(pass_context=True)
-async def battery(ctx, series=None, parallel=None, amphour=None, nominal_volt=None):
-    if all((series, parallel, amphour, nominal_volt)) and ((len(series) or len(parallel) or len(amphour) or len(nominal_volt)) <= 2):
-        total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour, nominal_volt)
+async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None):
+    if all((series, parallel, amphour)) and ((len(series) <= 2 and len(parallel) <= 2 and len(amphour) <= 2) is True) and codeblock is None:
+        total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour)
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="In Series:", value=series + "s", inline=True)
         embed.add_field(name="In Parallel:", value=parallel + "p", inline=True)
         embed.add_field(name="In Amp Hours:", value="%0.2f" % float(amphour) + "ah", inline=True)
-        embed.add_field(name="In Nom Volt:", value="{0:.2f}".format(float(nominal_volt)) + "v", inline=True)
         embed.add_field(name="Nominal Voltage of Pack:", value="{0:.2f}".format(float(total_nominal_voltage)) + "v", inline=False)
         embed.add_field(name="Total Amp Hours:", value="{0:.2f}".format(float(total_amphour)) + "ah", inline=False)
         embed.add_field(name="Total Watt Hours:", value="{0:.2f}".format(float(total_watthour)) + "wh", inline=False)
         embed.add_field(name="Estimated Ranges:", value="{0:.2f}".format(float(total_range_km)) + "km, or " + "{0:.2f}".format(float(total_range_mi)) + "mi")
         await client.say(embed=embed)
-    elif series == parallel == amphour == nominal_volt is None:
+    elif codeblock is not None:
+        embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
+        embed.add_field(name="Arguments Error:", value="Sorry but the bot only accepts 3 inputs which are: Series, Parallel and AmpHours.", inline=True)
+        await client.say(embed=embed)
+    elif series == parallel == amphour is None:
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 4 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell. 4) Nominal voltage per cell (for li-ion 3.6 is best)")
         embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value# #Nominal Voltage value#")
         await client.send_message(ctx.message.author, embed=embed)
-    elif ((len(series) or len(parallel) or len(amphour) or len(nominal_volt)) > 2):
+    elif ((len(series) <= 2 and len(parallel) <= 2 and len(amphour) <= 2) is False):
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Value length error:", value="Sorry but the bot only accepts values from 0-99 for each field.", inline=True)
         await client.say(embed=embed)
@@ -138,8 +145,8 @@ async def brand(ctx, brandin=None):
 
 
 @client.command(pass_context=True)  # +convert
-async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=None):
-    if all((inputval, inputuni, to_text, desireduni)):
+async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=None, codeblock=None):
+    if all((inputval, inputuni, to_text, desireduni)) and codeblock is None:
         upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
         answer = conv.executer(float(upcase1), upcase2, upcase4)
         embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
@@ -147,6 +154,10 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
         embed.add_field(name="Input Unit:", value=inputuni, inline=True)
         embed.add_field(name="Output Unit:", value=desireduni, inline=False)
         embed.add_field(name="Result", value=answer, inline=False)
+        await client.say(embed=embed)
+    elif codeblock is not None:
+        embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
+        embed.add_field(name="Arguments Error:", value="Sorry but the bot only accepts 4 inputs which are: inputValue, inputUnit, \"to\" and DesiredUnit.", inline=True)
         await client.say(embed=embed)
     else:
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +convert command works" % (ctx.message.author.name), color=0xFF0000)
