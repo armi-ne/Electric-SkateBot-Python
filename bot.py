@@ -89,17 +89,21 @@ async def on_message(message):
 
 @client.command(pass_context=True)
 async def battery(ctx, series=None, parallel=None, amphour=None, nominal_volt=None):
-    if all((series, parallel, amphour, nominal_volt)):
+    if all((series, parallel, amphour, nominal_volt)) and ((len(series) or len(parallel) or len(amphour) or len(nominal_volt)) <= 2):
         total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour, nominal_volt)
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
-        embed.add_field(name="Input Series:", value=series + "s", inline=True)
-        embed.add_field(name="Input Parallel:", value=parallel + "p", inline=True)
-        embed.add_field(name="Input Amp Hours:", value="{0:.2}".format(float(amphour)) + "ah", inline=True)
-        embed.add_field(name="Input Nominal Voltage:", value="{0:.2f}".format(float(nominal_volt)) + "v", inline=True)
+        embed.add_field(name="In Series:", value=series + "s", inline=True)
+        embed.add_field(name="In Parallel:", value=parallel + "p", inline=True)
+        embed.add_field(name="In Amp Hours:", value="%0.2f" % float(amphour) + "ah", inline=True)
+        embed.add_field(name="In Nom Volt:", value="{0:.2f}".format(float(nominal_volt)) + "v", inline=True)
         embed.add_field(name="Nominal Voltage of Pack:", value="{0:.2f}".format(float(total_nominal_voltage)) + "v", inline=False)
         embed.add_field(name="Total Amp Hours:", value="{0:.2f}".format(float(total_amphour)) + "ah", inline=False)
         embed.add_field(name="Total Watt Hours:", value="{0:.2f}".format(float(total_watthour)) + "wh", inline=False)
         embed.add_field(name="Estimated Ranges:", value="{0:.2f}".format(float(total_range_km)) + "km, or " + "{0:.2f}".format(float(total_range_mi)) + "mi")
+        await client.say(embed=embed)
+    elif ((len(series) or len(parallel) or len(amphour) or len(nominal_volt)) > 2):
+        embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
+        embed.add_field(name="Value length error:", value="Sorry but the bot only accepts values from 0-99 for each field.", inline=True)
         await client.say(embed=embed)
     else:
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
@@ -151,6 +155,7 @@ async def server(ctx):
     embed.add_field(name="Name", value=ctx.message.server.name, inline=True)
     embed.add_field(name="Number of e-Boarders", value=(len(ctx.message.server.members) - 3))
     embed.add_field(name="Number of Channels", value=(len(ctx.message.server.channels)))
+    embed.add_field(name="Owner", value=(ctx.message.server.owner))
     embed.set_thumbnail(url=ctx.message.server.icon_url)
     await client.say(embed=embed)
 
