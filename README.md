@@ -20,6 +20,10 @@ Modified Commands:
 4) +help
  
  a) Adjusted the message to reflect changes in the +battery and +convert functions
+
+5) Easter Eggs
+
+ a) Moved the easter eggs commands into a new file. Now all phrases to look for are listed in lists, making it easier to add new phrases and easter eggs later on.
 _____________________________________________________________________________
 More Info:
 
