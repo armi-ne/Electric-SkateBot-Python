@@ -54,7 +54,7 @@ async def test(ctx, var1=None, var2=None):
 _____________________________________________________________________________
 Date 15/03/2018
 
-Total hours spent learning python: 98
+Total hours spent learning python: 100
 
 Total days spend learning python: 18
 
