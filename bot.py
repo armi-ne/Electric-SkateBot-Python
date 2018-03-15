@@ -65,7 +65,7 @@ async def on_message(message):
         embed = discord.Embed(title="Hello %s, here are a list of easter eggs" % (message.author.name), color=0xFF0000)
         embed.add_field(name="Ben Pls", value="Everyone knows this one", inline=False)
         embed.add_field(name="Moshi Moshi", value="*UserName* Desu", inline=False)
-        embed.add_field(name="Tag Sophia", value="You can thank Jinra for this", inline=False)
+        embed.add_field(name="@ mention Sophia '@Sofu'", value="You can thank Jinra for this", inline=False)
         embed.add_field(name="Who's your daddy?", value="Want to know who was responsible for the bots birth?", inline=False)
         await client.send_message(message.author, embed=embed)
     # Help
@@ -132,7 +132,7 @@ async def brand(ctx, brandin=None):
         website, email, facebook, reddit, thumbnail = brand_.brandfinder(upcase1)
         embed = discord.Embed(title="%s's Info" % brandin.capitalize(), color=0xFF0000)
         embed.add_field(name="Website: ", value=website, inline=True)
-        embed.add_field(name="eMail: ", value=email, inline=True)
+        embed.add_field(name="Email: ", value=email, inline=True)
         embed.add_field(name="Facebook: ", value=facebook, inline=False)
         embed.add_field(name="Reddit: ", value=reddit, inline=False)
         embed.set_thumbnail(url=thumbnail)
