@@ -5,16 +5,21 @@ Modified Commands:
 
  a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab.
 
-2) +convert
+2) +brand
+
+ a) Modified this in a similar way to +battery and +convert, however the if check is different, explained below.
+
+3) +convert
 
  a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab.
 
-3) +help
+4) +help
  
  a) Adjusted the message to reflect changes in the +battery and +convert functions
 _____________________________________________________________________________
 More Info:
-In regards to the +battery and +convert command, through the use of optional variables and evaluating multiple variables using one if statement (https://stackoverflow.com/questions/9504638/evaluate-multiple-variables-in-one-if-statement) now when users don't provide the required number of arguments the bot will instead send the user a PM detailing how to properly use the command.
+
+1) In regards to the +battery and +convert command, through the use of optional variables and evaluating multiple variables using one if statement (https://stackoverflow.com/questions/9504638/evaluate-multiple-variables-in-one-if-statement) now when users don't provide the required number of arguments the bot will instead send the user a PM detailing how to properly use the command.
 
 Example:
 
@@ -31,7 +36,17 @@ async def test(ctx, var1=None, var2=None):
     else:
     
         await client.say("Please can you input 2 values")
-        
+
+2) In regards to +brand, since there's only 1 argument to check for, instead of "if any(())", I've used "if brandin is not None"
+
+ a) 
+ 
+  @client.command(pass_context=True)  # +brand
+ 
+  async def brand(ctx, brandin=None):
+ 
+     if brandin is not None:
+
 _____________________________________________________________________________
 Date 15/03/2018
 
