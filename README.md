@@ -1,3 +1,44 @@
+# Update 3.6, 15/03/2018
+_____________________________________________________________________________
+Modified Commands:
+1) +battery
+
+ a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab.
+
+2) +convert
+
+ a) Modified and implemented optional variables and a help "error" message, please read under "more info" tab.
+
+3) +help
+ 
+ a) Adjusted the message to reflect changes in the +battery and +convert functions
+_____________________________________________________________________________
+More Info:
+In regards to the +battery and +convert command, through the use of optional variables and evaluating multiple variables using one if statement (https://stackoverflow.com/questions/9504638/evaluate-multiple-variables-in-one-if-statement) now when users don't provide the required number of arguments the bot will instead send the user a PM detailing how to properly use the command.
+
+Example:
+
+@client.command(pass_context=True)
+
+async def test(ctx, var1=None, var2=None):
+
+    if all((var1, var2)):
+    
+        var3 = str(var1) + str(var2)
+        
+        await client.say(var3)
+        
+    else:
+    
+        await client.say("Please can you input 2 values")
+        
+_____________________________________________________________________________
+Date 05/03/2018
+
+Total hours spent learning python: 98
+
+Total days spend learning python: 18
+
 # Update 3.5, 09/03/2018
 _____________________________________________________________________________
 Other Changes:
