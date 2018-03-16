@@ -93,7 +93,7 @@ async def on_message(message):
     await client.process_commands(message)
 
 
-@client.command(pass_context=True)
+@client.command(pass_context=True)  # +battery
 async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None):
     checkanswer = incheck.batterycheck(series, parallel, amphour, codeblock)
     if checkanswer == "NoValues":  # No arguments
@@ -186,7 +186,7 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
         await client.send_message(ctx.message.author, embed=embed)
 
 
-@client.command(pass_context=True)
+@client.command(pass_context=True)  # +server
 async def server(ctx):
     embed = discord.Embed(name="{}'s info".format(ctx.message.server.name), description="", color=0xFF0000)
     embed.add_field(name="Name", value=ctx.message.server.name, inline=True)
