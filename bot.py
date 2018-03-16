@@ -81,6 +81,9 @@ async def on_message(message):
         embed.add_field(name="+reddit", value="Get link to the official esk8 Reddit", inline=False)
         embed.add_field(name="+server", value="Server Information", inline=False)
         await client.send_message(message.author, embed=embed)
+        embed2 = discord.Embed(title="Hello %s" % (message.author.name), color=0xFF0000)
+        embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        await client.send_message(message.channel, embed=embed2)
     # Moshi Moshi
     if message.content.upper() in eastereggs.moshi_moshi:
         await client.send_message(message.channel, "Electric Skatebot Desu, {} san".format(message.author.name))
@@ -101,6 +104,9 @@ async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None)
         embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
         embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
         await client.send_message(ctx.message.author, embed=embed)
+        embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
+        embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        await client.say(embed=embed2)
     elif checkanswer == "TypeError":  # Type Error
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Please input numbers.", inline=True)
@@ -133,6 +139,9 @@ async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None)
         embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
         embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
         await client.send_message(ctx.message.author, embed=embed)
+        embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
+        embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        await client.say(embed=embed2)
 
 
 @client.command(pass_context=True)  # +brand
@@ -162,6 +171,9 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
         embed.add_field(name="Command Format: ", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"")
         embed.add_field(name="Current Conversion Pairs: ", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi")
         await client.send_message(ctx.message.author, embed=embed)
+        embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
+        embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        await client.say(embed=embed2)
     elif checkanswer == "TypeError":  # Type Error
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Please input numbers and letters where requested.", inline=True)
@@ -184,6 +196,9 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
         embed.add_field(name="Command Format: ", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"")
         embed.add_field(name="Current Conversion Pairs: ", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi")
         await client.send_message(ctx.message.author, embed=embed)
+        embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
+        embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        await client.say(embed=embed2)
 
 
 @client.command(pass_context=True)  # +server
