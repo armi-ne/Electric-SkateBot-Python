@@ -5,6 +5,7 @@ import lbry.battery as batt
 import lbry.brand as brand_
 import lbry.converter as conv
 import lbry.easter_eggs as eastereggs
+import lbry.input_check as incheck
 
 Client = discord.Client()
 client = commands.Bot(command_prefix="+")
@@ -94,11 +95,21 @@ async def on_message(message):
 
 @client.command(pass_context=True)
 async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None):
-    if not ((series.isnumeric() or series.replace('.', '', 1).isdigit()) and (parallel.isnumeric() or parallel.replace('.', '', 1).isdigit()) and (amphour.isnumeric() or amphour.replace('.', '', 1).isdigit())):
+    checkanswer = incheck.batterycheck(series, parallel, amphour, codeblock)
+    if checkanswer == "NoValues":  # No arguments
+        embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
+        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
+        await client.send_message(ctx.message.author, embed=embed)
+    elif checkanswer == "TypeError":  # Type Error
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Please input numbers.", inline=True)
         await client.say(embed=embed)
-    elif all((series, parallel, amphour)) and ((float(series) < 100.0 and float(parallel) < 100.0 and float(amphour) <= 100.0) is True) and codeblock is None:
+    elif checkanswer == "NoDecimals":  # Series and Parallel whole numbers check
+        embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
+        embed.add_field(name="Series/Parallel Error:", value="Sorry but Series and Parallel only accept whole numbers.", inline=True)
+        await client.say(embed=embed)
+    elif checkanswer == "Correct":  # Correct Input
         total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour)
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="In Series:", value=series + "s", inline=True)
@@ -109,20 +120,15 @@ async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None)
         embed.add_field(name="Total Watt Hours:", value="{0:.2f}".format(float(total_watthour)) + "wh", inline=False)
         embed.add_field(name="Estimated Ranges:", value="{0:.2f}".format(float(total_range_km)) + "km, or " + "{0:.2f}".format(float(total_range_mi)) + "mi")
         await client.say(embed=embed)
-    elif codeblock is not None:
+    elif checkanswer == "TooMany":  # Too many arguments
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Sorry but the bot only accepts 3 inputs which are: Series, Parallel and AmpHours.", inline=True)
         await client.say(embed=embed)
-    elif series == parallel == amphour is None:
-        embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
-        embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
-        embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
-        await client.send_message(ctx.message.author, embed=embed)
-    elif ((float(series) < 100.0 and float(parallel) < 100.0 and float(amphour) <= 100.0) is False):
+    elif checkanswer == "ValuesTooHigh":  # Values given are too high
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Value length error:", value="Sorry but the bot only accepts values from 0-99 for each field.", inline=True)
         await client.say(embed=embed)
-    else:
+    else:  # Just in case
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
         embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
@@ -150,11 +156,17 @@ async def brand(ctx, brandin=None):
 
 @client.command(pass_context=True)  # +convert
 async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=None, codeblock=None):
-    if ((inputval.isnumeric() or inputval.replace('.', '', 1).isdigit()) is False) or ((inputuni.isnumeric() or inputuni.replace('.', '', 1).isdigit()) is not False) or ((to_text.isnumeric() or to_text.replace('.', '', 1).isdigit()) is not False) or ((desireduni.isnumeric() or desireduni.replace('.', '', 1).isdigit()) is not False):
+    checkanswer = incheck.convertercheck(inputval, inputuni, to_text, desireduni, codeblock)
+    if checkanswer == "NoInput":  # No Arguments
+        embed = discord.Embed(title="Hello %s, here's an explanation of how the +convert command works" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="Command Format: ", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"")
+        embed.add_field(name="Current Conversion Pairs: ", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi")
+        await client.send_message(ctx.message.author, embed=embed)
+    elif checkanswer == "TypeError":  # Type Error
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Please input numbers and letters where requested.", inline=True)
         await client.say(embed=embed)
-    elif all((inputval, inputuni, to_text, desireduni)) and codeblock is None:
+    elif checkanswer == "Correct":  # Correct Input
         upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
         answer = conv.executer(float(upcase1), upcase2, upcase4)
         embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
@@ -163,11 +175,11 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
         embed.add_field(name="Output Unit:", value=desireduni, inline=False)
         embed.add_field(name="Result", value=answer, inline=False)
         await client.say(embed=embed)
-    elif codeblock is not None:
+    elif checkanswer == "TooMany":  # Too Many Arguments
         embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Sorry but the bot only accepts 4 inputs which are: inputValue, inputUnit, \"to\" and DesiredUnit.", inline=True)
         await client.say(embed=embed)
-    else:
+    else:  # Just in case
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +convert command works" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Command Format: ", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"")
         embed.add_field(name="Current Conversion Pairs: ", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi")
