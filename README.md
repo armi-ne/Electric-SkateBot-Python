@@ -1,3 +1,19 @@
+# Update 3.6.1, 16/03/2018
+_____________________________________________________________________________
+Modified Commands:
+1) +battery
+
+a) Modified +battery to only accept the correct valuetypes for each argument, else it will return a custom error message.
+
+2) +convert
+
+a) Modified +convert to only accept the correct valuetypes for each argument, else it will return a custom error message.
+_____________________________________________________________________________
+Date 16/03/2018
+
+Total hours spent learning python: 104
+
+Total days spend learning python: 19
 # Update 3.6, 15/03/2018
 _____________________________________________________________________________
 Added Commands:
