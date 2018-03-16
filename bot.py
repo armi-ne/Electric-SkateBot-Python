@@ -94,7 +94,11 @@ async def on_message(message):
 
 @client.command(pass_context=True)
 async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None):
-    if all((series, parallel, amphour)) and ((len(series) <= 2 and len(parallel) <= 2 and len(amphour) <= 2) is True) and codeblock is None:
+    if not ((series.isnumeric() or series.replace('.', '', 1).isdigit()) and (parallel.isnumeric() or parallel.replace('.', '', 1).isdigit()) and (amphour.isnumeric() or amphour.replace('.', '', 1).isdigit())):
+        embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
+        embed.add_field(name="Arguments Error:", value="Please input numbers.", inline=True)
+        await client.say(embed=embed)
+    elif all((series, parallel, amphour)) and ((float(series) < 100.0 and float(parallel) < 100.0 and float(amphour) <= 100.0) is True) and codeblock is None:
         total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour)
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="In Series:", value=series + "s", inline=True)
@@ -114,7 +118,7 @@ async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None)
         embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
         embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
         await client.send_message(ctx.message.author, embed=embed)
-    elif ((len(series) <= 2 and len(parallel) <= 2 and len(amphour) <= 2) is False):
+    elif ((float(series) < 100.0 and float(parallel) < 100.0 and float(amphour) <= 100.0) is False):
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Value length error:", value="Sorry but the bot only accepts values from 0-99 for each field.", inline=True)
         await client.say(embed=embed)
@@ -146,7 +150,11 @@ async def brand(ctx, brandin=None):
 
 @client.command(pass_context=True)  # +convert
 async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=None, codeblock=None):
-    if all((inputval, inputuni, to_text, desireduni)) and codeblock is None:
+    if ((inputval.isnumeric() or inputval.replace('.', '', 1).isdigit()) is False) or ((inputuni.isnumeric() or inputuni.replace('.', '', 1).isdigit()) is not False) or ((to_text.isnumeric() or to_text.replace('.', '', 1).isdigit()) is not False) or ((desireduni.isnumeric() or desireduni.replace('.', '', 1).isdigit()) is not False):
+        embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
+        embed.add_field(name="Arguments Error:", value="Please input numbers and letters where requested.", inline=True)
+        await client.say(embed=embed)
+    elif all((inputval, inputuni, to_text, desireduni)) and codeblock is None:
         upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
         answer = conv.executer(float(upcase1), upcase2, upcase4)
         embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
