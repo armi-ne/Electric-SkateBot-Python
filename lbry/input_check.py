@@ -3,7 +3,7 @@
 
 def batterycheck(series=None, parallel=None, amphour=None, codeblock=None):
     # No values
-    if series == parallel == amphour is None:
+    if (series is None) or (parallel is None) or (amphour is None):
         answer = "NoValues"
     # For Input Type
     elif not ((series.isnumeric() or series.replace('.', '', 1).isnumeric()) and (parallel.isnumeric() or parallel.replace('.', '', 1).isnumeric()) and (amphour.isnumeric() or amphour.replace('.', '', 1).isnumeric())):
@@ -26,10 +26,11 @@ def batterycheck(series=None, parallel=None, amphour=None, codeblock=None):
 
 
 def convertercheck(inputval=None, inputuni=None, to_text=None, desireduni=None, codeblock=None):
+    # No Values
     if (inputval is None) or (inputuni is None) or (to_text is None) or (desireduni is None):
         answer = "NoInput"
     # For Input Type
-    elif ((inputval.isnumeric() or inputval.replace('.', '', 1).isdigit()) is False) or ((inputuni.isnumeric() or inputuni.replace('.', '', 1).isdigit()) is not False) or ((to_text.isnumeric() or to_text.replace('.', '', 1).isdigit()) is not False) or ((desireduni.isnumeric() or desireduni.replace('.', '', 1).isdigit()) is not False):
+    elif ((inputval.isnumeric() or inputval.replace('.', '', 1).isdigit()) is False) or ((inputuni.isnumeric() or inputuni.replace('.', '', 1).isdigit()) is True) or ((to_text.isnumeric() or to_text.replace('.', '', 1).isdigit()) is True) or ((desireduni.isnumeric() or desireduni.replace('.', '', 1).isdigit()) is True):
         answer = "TypeError"
     # For Correct Input
     elif all((inputval, inputuni, to_text, desireduni)) and codeblock is None:
