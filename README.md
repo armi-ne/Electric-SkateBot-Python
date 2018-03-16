@@ -1,3 +1,25 @@
+# Update 3.6.2, 16/03/2018
+_____________________________________________________________________________
+Modified Commands:
+1) +battery
+
+a) Implemented new input_check.py functions
+
+2) +convert
+
+a) Implemented new input_check.py functions
+_____________________________________________________________________________
+More Info:
+
+1) input_check.py added
+
+a) Input check bascially does all of the data validation checks for the +battery and +convert commands that were implemented yesterday, just moved to their own respective functions in the new input_check.py file and return a string answer which tells the bot what to do. 
+_____________________________________________________________________________
+Date 16/03/2018
+
+Total hours spent learning python: 105
+
+Total days spend learning python: 19
 # Update 3.6.1, 16/03/2018
 _____________________________________________________________________________
 Modified Commands:
