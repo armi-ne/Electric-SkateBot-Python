@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import bot
+import lbry.admins as adminslist
 import lbry.battery as batt
 import lbry.brand as brand_
 import lbry.converter as conv
@@ -199,6 +200,37 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
         embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
         embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
         await client.say(embed=embed2)
+
+
+@client.command(pass_context = True)  # +mute
+async def mute(ctx, member: discord.Member, codeblock=None, *reason):
+    if ctx.message.author.id in adminslist.admin_id and codeblock is not None:
+        role = discord.utils.get(member.server.roles, name='Muted')
+        await client.add_roles(member, role)
+        embed=discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
+        sentence = codeblock + " " + (' '.join(reason))
+        embed.add_field(name="Reason", value=sentence)
+        await client.say(embed=embed)
+        await client.send_message(client.get_channel(id='371587856042557440'), embed=embed)
+    elif codeblock is None:
+        embed=discord.Embed(title="No Reason.", description="Please include a reason", color=0xFF0000)
+        await client.say(embed=embed)
+    else:
+        embed=discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
+        await client.say(embed=embed)
+
+
+@client.command(pass_context = True)  # +unmute
+async def unmute(ctx, member: discord.Member):
+     if ctx.message.author.id in adminslist.admin_id:
+        role = discord.utils.get(member.server.roles, name='Muted')
+        await client.remove_roles(member, role)
+        embed=discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
+        await client.say(embed=embed)
+        await client.send_message(client.get_channel(id='371587856042557440'), embed=embed)
+     else:
+        embed=discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
+        await client.say(embed=embed)
 
 
 @client.command(pass_context=True)  # +server
