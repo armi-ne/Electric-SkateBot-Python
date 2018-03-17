@@ -1,5 +1,25 @@
 # Update 3.6.2, 16/03/2018
 _____________________________________________________________________________
+Added:
+1) +mute
+
+a) Assigns the Muted role to a user, uses codeblock and *args aswell in order to provide a reason, if no reason is given command isn't accepted. Automatically posts each mute and unmute event to mod logs.
+
+2) +unmute
+
+a) Removes the muted role
+_____________________________________________________________________________
+More Info:
+
+1) Added admins.py in order to set a list of users (assigned via discord ID) who are permitted to use the mute command. 
+_____________________________________________________________________________
+Date 17/03/2018
+
+Total hours spent learning python: 106
+
+Total days spend learning python: 20
+# Update 3.6.2, 16/03/2018
+_____________________________________________________________________________
 Modified Commands:
 1) +battery
 
