@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import bot
 import asyncio
+import datetime
+import time
 import lbry.admins as adminslist
 import lbry.battery as batt
 import lbry.brand as brand_
@@ -14,6 +16,7 @@ import lbry.mute_list as mutel
 Client = discord.Client()
 client = commands.Bot(command_prefix="+")
 client.remove_command("help")
+starttime = time.time()
 
 
 @client.event
@@ -21,6 +24,11 @@ async def on_ready():
     await client.change_presence(game=discord.Game(name='+help for more info'))
     print("Hi, my name is " + client.user.name)
     print("My ID is: " + client.user.id)
+    print(str(time.time()))
+    while True:
+        await asyncio.sleep(60)
+        mutel.write_to_file()
+        print("Mutes List Saved")
 
 
 @client.event  # Help Commands
@@ -70,6 +78,7 @@ async def on_message(message):
         embed = discord.Embed(title="Hello %s, here are a list of easter eggs" % (message.author.name), color=0xFF0000)
         embed.add_field(name="Ben Pls", value="Everyone knows this one", inline=False)
         embed.add_field(name="Moshi Moshi", value="*UserName* Desu", inline=False)
+        embed.add_field(name="+Popcorn", value = "Only certain users can use this.")
         embed.add_field(name="@ mention Sophia '@Sofu'", value="You can thank Jinra for this", inline=False)
         embed.add_field(name="Who's your daddy?", value="Want to know who was responsible for the bots birth?", inline=False)
         await client.send_message(message.author, embed=embed)
@@ -91,6 +100,9 @@ async def on_message(message):
     # Moshi Moshi
     if message.content.upper() in eastereggs.moshi_moshi:
         await client.send_message(message.channel, "Electric Skatebot Desu, {} san".format(message.author.name))
+    # Popcorn
+    if ("344579589592580096" in message.author.id) and message.content.upper() == "+POPCORN":
+        await client.send_message(message.channel, "Get your popcorn here :popcorn:")
     # Sofu
     if ("209852808977973250" in message.raw_mentions):
         await client.send_message(message.channel, "💸 :bird: T W I T T E R  E N G  M O N E Y :bird: 💸")
@@ -208,6 +220,7 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
 @client.command(pass_context = True)  # +mute
 async def mute(ctx, member: discord.Member, codeblock=None, *reason):
     checkanswer = mutec.checks(codeblock)  # Checks input
+    import_time = datetime.datetime.now()
     if ctx.message.author.id in adminslist.admin_id and checkanswer == "Correct":  # If input matches requirements
         duration_in_min, reason_final = mutec.duration_and_reason(codeblock, reason)  # Gets the duration in minutes and the reason
         role = discord.utils.get(member.server.roles, name='Muted')  # Gets the role we're adding
@@ -215,7 +228,7 @@ async def mute(ctx, member: discord.Member, codeblock=None, *reason):
         embed = discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
         embed.add_field(name="Reason", value=reason_final)
         embed.add_field(name="Duration", value=str(duration_in_min / 60) + " Minute(s)")
-        mutel.muted_users[member.id] = codeblock
+        mutel.muted_users[member.id] = [codeblock, import_time]
         await client.say(embed=embed)
         await client.send_message(client.get_channel(id='371587856042557440'), embed=embed)
         await asyncio.sleep(duration_in_min, reason_final)
@@ -256,8 +269,9 @@ async def server(ctx):
     await client.say(embed=embed)
 
 
-@client.command(pass_context=True)  # +server
+@client.command(pass_context=True)  # +printmutes
 async def printmutes(ctx):
     print(mutel.muted_users)
+
 
 client.run("")
