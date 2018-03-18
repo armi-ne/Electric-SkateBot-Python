@@ -1,3 +1,27 @@
+# Update 3.6.4, 18/03/2018
+_____________________________________________________________________________
+Modified Commands:
+1) +mute
+
+a) Added answer checker to ensure input is correct.
+
+b) Added asyncio.sleep() in order to unmute after a given amount of time (it takes in input as seconds however I've modified it to take in minutes instead for ease of use)
+
+c) Adds all mutes (user.id, duration) to a dictionary file.
+
+2) +unmute
+
+a) Removes dictionary entries of mutes as well as unmuting.
+_____________________________________________________________________________
+More Info:
+
+1) Added both mute_command.py and mute_list.py. Right now mute_list won't update although I'll be figuring that out later in order to keep track of mutes in between bot restarts/shut-downs.
+_____________________________________________________________________________
+Date 18/03/2018
+
+Total hours spent learning python: 109
+
+Total days spend learning python: 21
 # Update 3.6.3, 17/03/2018
 _____________________________________________________________________________
 Added:
