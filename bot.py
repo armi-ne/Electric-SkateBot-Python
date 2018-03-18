@@ -1,12 +1,15 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import bot
+import asyncio
 import lbry.admins as adminslist
 import lbry.battery as batt
 import lbry.brand as brand_
 import lbry.converter as conv
 import lbry.easter_eggs as eastereggs
 import lbry.input_check as incheck
+import lbry.mute_command as mutec
+import lbry.mute_list as mutel
 
 Client = discord.Client()
 client = commands.Bot(command_prefix="+")
@@ -204,32 +207,41 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
 
 @client.command(pass_context = True)  # +mute
 async def mute(ctx, member: discord.Member, codeblock=None, *reason):
-    if ctx.message.author.id in adminslist.admin_id and codeblock is not None:
-        role = discord.utils.get(member.server.roles, name='Muted')
-        await client.add_roles(member, role)
-        embed=discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
-        sentence = codeblock + " " + (' '.join(reason))
-        embed.add_field(name="Reason", value=sentence)
+    checkanswer = mutec.checks(codeblock)  # Checks input
+    if ctx.message.author.id in adminslist.admin_id and checkanswer == "Correct":  # If input matches requirements
+        duration_in_min, reason_final = mutec.duration_and_reason(codeblock, reason)  # Gets the duration in minutes and the reason
+        role = discord.utils.get(member.server.roles, name='Muted')  # Gets the role we're adding
+        await client.add_roles(member, role)  # Adds the mute role
+        embed = discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
+        embed.add_field(name="Reason", value=reason_final)
+        embed.add_field(name="Duration", value=str(duration_in_min / 60) + " Minute(s)")
+        mutel.muted_users[member.id] = codeblock
         await client.say(embed=embed)
         await client.send_message(client.get_channel(id='371587856042557440'), embed=embed)
-    elif codeblock is None:
-        embed=discord.Embed(title="No Reason.", description="Please include a reason", color=0xFF0000)
+        await asyncio.sleep(duration_in_min, reason_final)
+        await client.remove_roles(member, role)
+        embed2 = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by Electric Skatebot!".format(member), color=0xFF0000)
+        await client.send_message(client.get_channel(id='371587856042557440'), embed=embed2)
+        del mutel.muted_users[member.id]
+    elif checkanswer == "Missing Time":
+        embed = discord.Embed(title="No Time.", description="Please include the mute duration (in minute(s))", color=0xFF0000)
         await client.say(embed=embed)
     else:
-        embed=discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
+        embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
         await client.say(embed=embed)
 
 
 @client.command(pass_context = True)  # +unmute
 async def unmute(ctx, member: discord.Member):
-     if ctx.message.author.id in adminslist.admin_id:
+    if ctx.message.author.id in adminslist.admin_id:
         role = discord.utils.get(member.server.roles, name='Muted')
         await client.remove_roles(member, role)
-        embed=discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
+        embed = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
         await client.say(embed=embed)
         await client.send_message(client.get_channel(id='371587856042557440'), embed=embed)
-     else:
-        embed=discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
+        del mutel.muted_users[member.id]
+    else:
+        embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
         await client.say(embed=embed)
 
 
@@ -242,5 +254,10 @@ async def server(ctx):
     embed.add_field(name="Owner", value=(ctx.message.server.owner))
     embed.set_thumbnail(url=ctx.message.server.icon_url)
     await client.say(embed=embed)
+
+
+@client.command(pass_context=True)  # +server
+async def printmutes(ctx):
+    print(mutel.muted_users)
 
 client.run("")
