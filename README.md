@@ -1,3 +1,15 @@
+# Update 3.6.5, 18/03/2018
+
+_____________________________________________________________________________
+More Info:
+
+1) Now all ACTIVE mutes will be recorded (time in minutes and the date+time when the mute was issued) in a .txt file, which is updated every 60 seconds in case anything should happen in order to prevent people being muted without the bot unmuting them due to a crash or so on.
+_____________________________________________________________________________
+Date 18/03/2018
+
+Total hours spent learning python: 112
+
+Total days spend learning python: 21
 # Update 3.6.4, 18/03/2018
 _____________________________________________________________________________
 Modified Commands:
