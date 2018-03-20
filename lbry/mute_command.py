@@ -1,13 +1,3 @@
-import discord
-from discord.ext import commands
-from discord.ext.commands import bot
-import asyncio
-
-Client = discord.Client()
-client = commands.Bot(command_prefix="+")
-client.remove_command("help")
-
-
 def checks(codeblock=None):
     if codeblock is not None:
         answer = "Correct"
