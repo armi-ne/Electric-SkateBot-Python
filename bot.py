@@ -210,14 +210,14 @@ async def clear(ctx, number):
         number = int(number) # Converts the number string into an int
         time = datetime.datetime.now()  # Gets the time
         import_time = time.strftime("%D, %H:%M:%S")  # Formats the time
-        deleted_messages = open("C:/Users/Armi-ne/Desktop/Electric-SkateBot-Python-Master (1)/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a") # Opens the deleted messages log
+        deleted_messages = open("C:/Users/Armi-ne/Desktop/Electric-SkateBot-Python-Master (1)/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a", encoding='utf-8') # Opens the deleted messages log
         deleted_messages.write("\n")  # Creates a new line
         deleted_messages.write("Deleted on: %s, by: %s" % (import_time, ctx.message.author.name))
         deleted_messages.write("\n")
         deleted_messages.close()  # Closes file
         async for x in client.logs_from(ctx.message.channel, limit = number):  # For each message sent, with a limit defined by the number
             string_to_write = str(x.author) + ": " + str(x.content)
-            deleted_messages = open("C:/Users/Armi-ne/Desktop/Electric-SkateBot-Python-Master (1)/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a")
+            deleted_messages = open("C:/Users/Armi-ne/Desktop/Electric-SkateBot-Python-Master (1)/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a", encoding='utf-8')
             deleted_messages.write(string_to_write)
             deleted_messages.write("\n")
             mgs.append(x)  # Adds the message to be deleted to the mgs list
