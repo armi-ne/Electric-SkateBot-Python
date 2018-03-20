@@ -12,6 +12,7 @@ import lbry.easter_eggs as eastereggs
 import lbry.input_check as incheck
 import lbry.mute_command as mutec
 import lbry.mute_list as mutel
+import lbry.role_assigner as roleassi
 
 Client = discord.Client()
 client = commands.Bot(command_prefix="+")
@@ -26,9 +27,65 @@ async def on_ready():
     print("My ID is: " + client.user.id)
     print(str(time.time()))
     while True:
-        await asyncio.sleep(60)
         mutel.write_to_file()
         print("Mutes List Saved")
+        channel = client.get_channel("425714572981436436")
+        server_ = channel.server
+        tick = {}
+        cross = {}
+        async for x in client.logs_from(channel, limit=100):
+            for reaction in x.reactions:
+                reacts = reaction.emoji
+                reactors = await client.get_reaction_users(reaction)
+                for reactor in reactors:
+                    if reactor.id == "425732605342908426":
+                        asd="asd"
+                    elif reaction.emoji == "✅":
+                        joined = str(reactor.id) + str(x.content)
+                        tick.update({str(joined):str(joined)})
+                    elif reaction.emoji == "❌":
+                        joined = str(reactor.id) + str(x.content)
+                        cross.update({str(joined):str(joined)})
+        #print("Tick")
+        #print(tick)
+        #print(" ")
+        #print("cross")
+        #print(cross)
+        await react_messages(cross, tick)
+        await asyncio.sleep(420)
+
+
+async def react_messages(cross, tick):
+    channel = client.get_channel("425714572981436436")
+    server_ = channel.server
+    #print("Cross")
+    #print(cross)
+    #print(" ")
+    #print("tick")
+    #print(tick)
+    async for x in client.logs_from(channel, limit=100):
+        role_name= x.content
+        role_to_assign = discord.utils.get(server_.roles, name=role_name)
+        for reaction in x.reactions:
+            reacts = reaction.emoji
+            reactors = await client.get_reaction_users(reaction)
+            for reactor in reactors:
+                reactor_ = reactor
+                reactor_name_id = reactor.id
+                reactees = server_.get_member(reactor_name_id)
+                joined = str(reactor.id) + str(x.content)
+                check_in_cross = not(str(joined) in tick)
+                check_in_tick = not(str(joined) in cross)
+                if reactor.id == "425732605342908426":
+                    asd="asd"
+                elif check_in_tick is False and check_in_cross is False:
+                    azy = "yza"
+                elif (role_to_assign in reactees.roles) and reacts == "❌":
+                    await client.remove_roles(reactees, role_to_assign)
+                elif (role_to_assign not in reactees.roles) and reacts == "✅":
+                    await client.add_roles(reactees, role_to_assign)
+                else:
+                    azy = "yza"    
 
 
 @client.event  # Help Commands
@@ -210,14 +267,14 @@ async def clear(ctx, number):
         number = int(number) # Converts the number string into an int
         time = datetime.datetime.now()  # Gets the time
         import_time = time.strftime("%D, %H:%M:%S")  # Formats the time
-        deleted_messages = open("C:/Users/Armi-ne/Desktop/Electric-SkateBot-Python-Master (1)/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a", encoding='utf-8') # Opens the deleted messages log
+        deleted_messages = open("C:/Users/Armi-ne/Dropbox/Coding/Coding Projects/Python/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a", encoding='utf-8') # Opens the deleted messages log
         deleted_messages.write("\n")  # Creates a new line
-        deleted_messages.write("Deleted on: %s, by: %s" % (import_time, ctx.message.author.name))
+        deleted_messages.write("Deleted on: %s, by: %s, in: %s" % (import_time, ctx.message.author.name, ctx.message.channel.name))
         deleted_messages.write("\n")
         deleted_messages.close()  # Closes file
         async for x in client.logs_from(ctx.message.channel, limit = number):  # For each message sent, with a limit defined by the number
             string_to_write = str(x.author) + ": " + str(x.content)
-            deleted_messages = open("C:/Users/Armi-ne/Desktop/Electric-SkateBot-Python-Master (1)/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a", encoding='utf-8')
+            deleted_messages = open("C:/Users/Armi-ne/Dropbox/Coding/Coding Projects/Python/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a", encoding='utf-8')
             deleted_messages.write(string_to_write)
             deleted_messages.write("\n")
             mgs.append(x)  # Adds the message to be deleted to the mgs list
