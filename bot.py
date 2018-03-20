@@ -112,6 +112,30 @@ async def on_message(message):
     await client.process_commands(message)
 
 
+@client.command(pass_context=True)  # +adminhelp
+async def admin(ctx, help=None):
+    if (ctx.message.author.id in adminslist.admin_id) is False:
+        embed = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name=">:(", value="You're not an admin :(", inline=True)
+        await client.say(embed=embed)
+    elif help is None and ctx.message.author.id in adminslist.admin_id:
+        embed = discord.Embed(title="Hello %s, here's the available Admin Commands" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="Mute", value="Use \"+admin mute\" for more info", inline=False)
+        embed.add_field(name="Clear", value="Use \"+admin clear\" for more info", inline=False)
+        await client.say(embed=embed)
+    elif help == "clear":
+        embed = discord.Embed(title="Hello %s, here's more information on +clear" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="+clear #number of messages#", value="The clear function will delete 2-100 messages, specified by the admin")
+        await client.say(embed=embed)
+    elif help == "mute" and ctx.message.author.id in adminslist.admin_id:
+        embed = discord.Embed(title="Hello %s, here's more information on +mute" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="+mute #user# #duration# #reason#", value="The mute function allows you to mute a certain user for a specific period of time. Make sure you include the duration and reason.", inline=False)
+        embed.add_field(name="+unmute #user#", value="The unmute function allows you to remove the \"Muted\" role from a certain user", inline=False)
+        embed.add_field(name="+mutelist", value="The mutelist function will provide the user ID's of currently muted users", inline=False)
+        embed.add_field(name="+printmute #user#", value="The printmute function will provide more information on a mute incident, if the mute is still Active", inline=False)
+        await client.say(embed=embed)
+
+
 @client.command(pass_context=True)  # +battery
 async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None):
     checkanswer = incheck.batterycheck(series, parallel, amphour, codeblock)
@@ -179,6 +203,29 @@ async def brand(ctx, brandin=None):
         await client.send_message(ctx.message.author, embed=embed)
 
 
+@client.command(pass_context = True)  # +clear
+async def clear(ctx, number):
+    if ctx.message.author.id in adminslist.admin_id:
+        mgs = [] # Creates an empty list to place all the message objects
+        number = int(number) # Converts the number string into an int
+        time = datetime.datetime.now()  # Gets the time
+        import_time = time.strftime("%D, %H:%M:%S")  # Formats the time
+        deleted_messages = open("C:/Users/Armi-ne/Desktop/Electric-SkateBot-Python-Master (1)/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a") # Opens the deleted messages log
+        deleted_messages.write("\n")  # Creates a new line
+        deleted_messages.write("Deleted on: %s, by: %s" % (import_time, ctx.message.author.name))
+        deleted_messages.write("\n")
+        deleted_messages.close()  # Closes file
+        async for x in client.logs_from(ctx.message.channel, limit = number):  # For each message sent, with a limit defined by the number
+            string_to_write = str(x.author) + ": " + str(x.content)
+            deleted_messages = open("C:/Users/Armi-ne/Desktop/Electric-SkateBot-Python-Master (1)/Electric-SkateBot-Python-Master/lbry/deleted_messages.txt", "a")
+            deleted_messages.write(string_to_write)
+            deleted_messages.write("\n")
+            mgs.append(x)  # Adds the message to be deleted to the mgs list
+        await client.delete_messages(mgs)  # Deletes the messages in the mgs list
+    else:
+        await client.say("No :(")
+
+
 @client.command(pass_context=True)  # +convert
 async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=None, codeblock=None):
     checkanswer = incheck.convertercheck(inputval, inputuni, to_text, desireduni, codeblock)
@@ -220,18 +267,20 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
 @client.command(pass_context = True)  # +mute
 async def mute(ctx, member: discord.Member, codeblock=None, *reason):
     checkanswer = mutec.checks(codeblock)  # Checks input
-    import_time = datetime.datetime.now()
+    time = datetime.datetime.now()
+    import_time = time.strftime("%D, %H:%M:%S")
     if ctx.message.author.id in adminslist.admin_id and checkanswer == "Correct":  # If input matches requirements
         duration_in_min, reason_final = mutec.duration_and_reason(codeblock, reason)  # Gets the duration in minutes and the reason
         role = discord.utils.get(member.server.roles, name='Muted')  # Gets the role we're adding
         await client.add_roles(member, role)  # Adds the mute role
+        muted_Name, muted_By, muted_Duration, muted_Time, muted_Reason = mutel.mute_data_formatter(member.name, ctx.message.author.name, codeblock, import_time, reason_final)
+        mutel.list_add(member.id,muted_Name, muted_By, muted_Duration, muted_Time, muted_Reason)
         embed = discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
         embed.add_field(name="Reason", value=reason_final)
-        embed.add_field(name="Duration", value=str(duration_in_min / 60) + " Minute(s)")
-        mutel.muted_users[member.id] = [codeblock, import_time]
-        await client.say(embed=embed)
-        await client.send_message(client.get_channel(id='371587856042557440'), embed=embed)
-        await asyncio.sleep(duration_in_min, reason_final)
+        embed.add_field(name="Duration", value=str(codeblock) + " Minute(s)")
+        await client.say(embed=embed)  # Sending to message where command was incited
+        await client.send_message(client.get_channel(id='371587856042557440'), embed=embed)  # Sending to automod log channel
+        await asyncio.sleep(duration_in_min)  # Waiting the duration until mute role is removed
         await client.remove_roles(member, role)
         embed2 = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by Electric Skatebot!".format(member), color=0xFF0000)
         await client.send_message(client.get_channel(id='371587856042557440'), embed=embed2)
@@ -258,6 +307,24 @@ async def unmute(ctx, member: discord.Member):
         await client.say(embed=embed)
 
 
+@client.command(pass_context=True)  # +printmutes
+async def printmute(ctx, member: discord.Member):
+    embed = discord.Embed(name="Mute List", description="", color=0xFF0000)
+    embed.add_field(name="Username: ", value=mutel.muted_users[member.id][0], inline=True)
+    embed.add_field(name="Muted By: ", value=mutel.muted_users[member.id][1], inline=True)
+    embed.add_field(name="Duration: ", value=mutel.muted_users[member.id][2], inline=True)
+    embed.add_field(name="Time: ", value=mutel.muted_users[member.id][3], inline=True)
+    embed.add_field(name="Reason: ", value=mutel.muted_users[member.id][4], inline=False)
+    await client.say(embed=embed)
+
+
+@client.command(pass_context=True)  # +mutelist
+async def mutelist(ctx):
+    embed = discord.Embed(name="Mute List", description="Current Muted Users", color=0xFF0000)
+    embed.add_field(name="ID's", value=mutel.muted_list())
+    await client.say(embed=embed)
+
+
 @client.command(pass_context=True)  # +server
 async def server(ctx):
     embed = discord.Embed(name="{}'s info".format(ctx.message.server.name), description="", color=0xFF0000)
@@ -267,11 +334,6 @@ async def server(ctx):
     embed.add_field(name="Owner", value=(ctx.message.server.owner))
     embed.set_thumbnail(url=ctx.message.server.icon_url)
     await client.say(embed=embed)
-
-
-@client.command(pass_context=True)  # +printmutes
-async def printmutes(ctx):
-    print(mutel.muted_users)
 
 
 client.run("")
