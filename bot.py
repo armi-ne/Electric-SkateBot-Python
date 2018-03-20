@@ -52,7 +52,7 @@ async def on_ready():
         #print("cross")
         #print(cross)
         await react_messages(cross, tick)
-        await asyncio.sleep(420)
+        await asyncio.sleep(300)
 
 
 async def react_messages(cross, tick):
