@@ -1,3 +1,17 @@
+# Update 4, 20/03/2018
+
+_____________________________________________________________________________
+More Info:
+
+1) Added #reaction-role-assigner:
+
+a) Now all brand/board roles are listed in a channel named #reaction-role-assigner. The bot will now scan through the channel, check reactions and assign roles accordingly.
+_____________________________________________________________________________
+Date 20/03/2018
+
+Total hours spent learning python: 132
+
+Total days spend learning python: 22
 # Update 3.6.6, 20/03/2018
 
 _____________________________________________________________________________
