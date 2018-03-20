@@ -1,3 +1,17 @@
+# Update 3.6.6, 20/03/2018
+
+_____________________________________________________________________________
+More Info:
+
+1) Improved the Mute commands. Makes use of functions and so on in order to make code more presentable (still hurts to look at but at least you won't go blind)
+2) Added +admin, now verified admins can check out what admin only commands are available
+3) Added +clear command, admin only. It will also store cleared messages, along with the name of the person who cleared and date+time in a txt file.
+_____________________________________________________________________________
+Date 20/03/2018
+
+Total hours spent learning python: 120
+
+Total days spend learning python: 22
 # Update 3.6.5, 18/03/2018
 
 _____________________________________________________________________________
