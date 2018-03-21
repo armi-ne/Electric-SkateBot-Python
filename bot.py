@@ -1,6 +1,5 @@
 import discord
-from discord.ext import commands
-from discord.ext.commands import bot
+from discord.ext.commands import Bot
 import asyncio
 import datetime
 import time
@@ -14,10 +13,19 @@ import lbry.mute_command as mutec
 import lbry.mute_list as mutel
 import lbry.role_assigner as roleassi
 
-Client = discord.Client()
-client = commands.Bot(command_prefix="+")
+client = Bot(command_prefix="+")
 client.remove_command("help")
 starttime = time.time()
+
+
+@client.event
+async def on_member_join(member):
+    channel = client.get_channel("342965746948636672")
+    server_ = channel.server
+    role_to_assign = discord.utils.get(server_.roles, name="Muted")
+    role_to_assign_2 = discord.utils.get(server_.roles, name="E-Boarders")
+    if member.id in mutel.muted_users:
+        await client.add_roles(member, role_to_assign)
 
 
 @client.event
@@ -25,44 +33,25 @@ async def on_ready():
     await client.change_presence(game=discord.Game(name='+help for more info'))
     print("Hi, my name is " + client.user.name)
     print("My ID is: " + client.user.id)
-    print(str(time.time()))
     while True:
+        # Print Mutes
         mutel.write_to_file()
         print("Mutes List Saved")
-        channel = client.get_channel("425714572981436436")
-        server_ = channel.server
-        tick = {}
-        cross = {}
-        async for x in client.logs_from(channel, limit=100):
-            for reaction in x.reactions:
-                reacts = reaction.emoji
-                reactors = await client.get_reaction_users(reaction)
-                for reactor in reactors:
-                    if reactor.id == "425732605342908426":
-                        asd="asd"
-                    elif reaction.emoji == "✅":
-                        joined = str(reactor.id) + str(x.content)
-                        tick.update({str(joined):str(joined)})
-                    elif reaction.emoji == "❌":
-                        joined = str(reactor.id) + str(x.content)
-                        cross.update({str(joined):str(joined)})
-        #print("Tick")
-        #print(tick)
-        #print(" ")
-        #print("cross")
-        #print(cross)
+        # Role Auto Assigner
+        channel = client.get_channel("425714572981436436")  # Getting the channel where roles are assigned
+        #Reacts Dictionary Creator
+        await roleassi.react_dictionary_creator(client, channel)
+        tick = roleassi.tick
+        cross = roleassi.cross
         await react_messages(cross, tick)
+        print("Roles Set")
+        # Sleep for 5 minutes then run again
         await asyncio.sleep(300)
 
-
+# Reaction Roles Setter
 async def react_messages(cross, tick):
     channel = client.get_channel("425714572981436436")
     server_ = channel.server
-    #print("Cross")
-    #print(cross)
-    #print(" ")
-    #print("tick")
-    #print(tick)
     async for x in client.logs_from(channel, limit=100):
         role_name= x.content
         role_to_assign = discord.utils.get(server_.roles, name=role_name)
