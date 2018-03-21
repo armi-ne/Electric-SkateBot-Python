@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands
 from discord.ext.commands import Bot
 import asyncio
 import datetime
@@ -13,9 +14,8 @@ import lbry.mute_command as mutec
 import lbry.mute_list as mutel
 import lbry.role_assigner as roleassi
 
-client = Bot(command_prefix="+")
+client = commands.Bot(command_prefix="+")
 client.remove_command("help")
-starttime = time.time()
 
 
 @client.event
@@ -39,16 +39,34 @@ async def on_ready():
         print("Mutes List Saved")
         # Role Auto Assigner
         channel = client.get_channel("425714572981436436")  # Getting the channel where roles are assigned
+        server_ = channel.server  # Setting the server by using channel.server
+        tick = {}  # Creating 2 dictionaries for Ticks and Crosses
+        cross = {}
         #Reacts Dictionary Creator
-        await roleassi.react_dictionary_creator(client, channel)
-        tick = roleassi.tick
-        cross = roleassi.cross
+        async for x in client.logs_from(channel, limit=100):
+            for reaction in x.reactions:
+                reacts = reaction.emoji
+                reactors = await client.get_reaction_users(reaction)
+                for reactor in reactors:
+                    if reactor.id == "425732605342908426":
+                        asd="asd"
+                    elif reaction.emoji == "✅":
+                        joined = str(reactor.id) + str(x.content)
+                        tick.update({str(joined):str(joined)})
+                    elif reaction.emoji == "❌":
+                        joined = str(reactor.id) + str(x.content)
+                        cross.update({str(joined):str(joined)})
         await react_messages(cross, tick)
-        print("Roles Set")
-        # Sleep for 5 minutes then run again
-        await asyncio.sleep(300)
+        print("Roles Assigned")
+        tick.clear()
+        cross.clear()
+        print("Dictionaries Cleared")
+        print("Going to sleep for 2 Minutes")
+        print(" ")
+        # Sleep for 2 minutes then run again
+        await asyncio.sleep(120)
 
-# Reaction Roles Setter
+
 async def react_messages(cross, tick):
     channel = client.get_channel("425714572981436436")
     server_ = channel.server
@@ -74,7 +92,7 @@ async def react_messages(cross, tick):
                 elif (role_to_assign not in reactees.roles) and reacts == "✅":
                     await client.add_roles(reactees, role_to_assign)
                 else:
-                    azy = "yza"    
+                    azy = "yza"
 
 
 @client.event  # Help Commands
