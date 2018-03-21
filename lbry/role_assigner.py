@@ -1,24 +1,28 @@
 import discord
-from discord.ext import commands
-from discord.ext.commands import bot
+from discord.ext.commands import Bot
 import asyncio
 import datetime
 import time
 
-Client = discord.Client()
-client = commands.Bot(command_prefix="+")
-client.remove_command("help")
+
+tick = {}
+cross = {}
 
 
-async def get_logs_from():
-    async for x in client.logs_from(client.get_channel("425714572981436436"), limit=20):
-        role_name= x.content
-        print(role_name)
+async def react_dictionary_creator(client, channel):
+    channel_in = channel
+    print(channel_in)
+    print(channel_in.id)
+    async for x in client.logs_from(channel_in, limit=100):
         for reaction in x.reactions:
             reacts = reaction.emoji
-            print(reacts)
             reactors = await client.get_reaction_users(reaction)
             for reactor in reactors:
-                reactees = reactor.id
-                print(reactees)
-    
+                if reactor.id == "425732605342908426":
+                    asd="asd"
+                elif reaction.emoji == "✅":
+                    joined = str(reactor.id) + str(x.content)
+                    tick.update({str(joined):str(joined)})
+                elif reaction.emoji == "❌":
+                    joined = str(reactor.id) + str(x.content)
+                    cross.update({str(joined):str(joined)})
