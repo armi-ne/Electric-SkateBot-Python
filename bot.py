@@ -83,13 +83,13 @@ async def react_messages(cross, tick):
                 joined = str(reactor.id) + str(x.content)
                 check_in_cross = not(str(joined) in tick)
                 check_in_tick = not(str(joined) in cross)
-                if reactor.id == "425732605342908426":
+                if reactor.id == "425732605342908426" or reactor.id == "224311966058020875":
                     asd="asd"
                 elif check_in_tick is False and check_in_cross is False:
                     azy = "yza"
                 elif (role_to_assign in reactees.roles) and reacts == "❌":
                     await client.remove_roles(reactees, role_to_assign)
-                elif (role_to_assign not in reactees.roles) and reacts == "✅":
+                elif (len(reactees.roles) < 7) and (role_to_assign not in reactees.roles) and reacts == "✅":
                     await client.add_roles(reactees, role_to_assign)
                 else:
                     azy = "yza"
