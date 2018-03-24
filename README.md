@@ -1,3 +1,17 @@
+# Update 4.1, 24/03/2018
+
+_____________________________________________________________________________
+More Info:
+
+1) Google Drive implementation!
+
+a) Now instead of saving all deleted messages to a .txt the bot will instead make use of google drive's API and access a spreadsheet which it will update with the deleted messages instead.
+_____________________________________________________________________________
+Date 24/03/2018
+
+Total hours spent learning python: 138
+
+Total days spend learning python: 23
 # Update 4, 20/03/2018
 
 _____________________________________________________________________________
