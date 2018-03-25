@@ -15,11 +15,12 @@ import lbry.input_check as incheck
 import lbry.mute_command as mutec
 import lbry.mute_list as mutel
 import lbry.role_assigner as roleassi
+import lbry.store_in_drive as dstore
 
 # Google Sheets
 scope = ["https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/Armi-ne/Dropbox/Coding/Coding Projects/Python/Electric-SkateBot-Python-Master/client_secret.json", scope)
-client = gspread.authorize(credentials) 
+credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/Administrator/Desktop/Electric-SkateBot-Python-Master/client_secret.json", scope)
+client = gspread.authorize(credentials)
 
 bot = commands.Bot(command_prefix="+")
 bot.remove_command("help")
@@ -33,6 +34,8 @@ async def on_member_join(member):
     role_to_assign_2 = discord.utils.get(server_.roles, name="E-Boarders")
     if member.id in mutel.muted_users:
         await bot.add_roles(member, role_to_assign)
+    if role_to_assign_2 not in member.server.roles:
+        await bot.add_roles(member, role_to_assign_2)
 
 
 @bot.event
@@ -46,17 +49,15 @@ async def on_ready():
         print("Mutes List Saved")
         # Role Auto Assigner
         channel = bot.get_channel("425714572981436436")  # Getting the channel where roles are assigned
-        server_ = channel.server  # Setting the server by using channel.server
         tick = {}  # Creating 2 dictionaries for Ticks and Crosses
         cross = {}
-        #Reacts Dictionary Creator
+        # Reacts Dictionary Creator
         async for x in bot.logs_from(channel, limit=100):
             for reaction in x.reactions:
-                reacts = reaction.emoji
                 reactors = await bot.get_reaction_users(reaction)
                 for reactor in reactors:
                     if reactor.id == "425732605342908426":
-                        asd="asd"
+                        asd = "asd"
                     elif reaction.emoji == "✅":
                         joined = str(reactor.id) + str(x.content)
                         tick.update({str(joined):str(joined)})
@@ -78,20 +79,19 @@ async def react_messages(cross, tick):
     channel = bot.get_channel("425714572981436436")
     server_ = channel.server
     async for x in bot.logs_from(channel, limit=100):
-        role_name= x.content
+        role_name = x.content
         role_to_assign = discord.utils.get(server_.roles, name=role_name)
         for reaction in x.reactions:
             reacts = reaction.emoji
             reactors = await bot.get_reaction_users(reaction)
             for reactor in reactors:
-                reactor_ = reactor
                 reactor_name_id = reactor.id
                 reactees = server_.get_member(reactor_name_id)
                 joined = str(reactor.id) + str(x.content)
                 check_in_cross = not(str(joined) in tick)
                 check_in_tick = not(str(joined) in cross)
                 if reactor.id == "425732605342908426" or reactor.id == "224311966058020875":
-                    asd="asd"
+                    asd = "asd"
                 elif check_in_tick is False and check_in_cross is False:
                     azy = "yza"
                 elif (role_to_assign in reactees.roles) and reacts == "❌":
@@ -110,6 +110,7 @@ async def on_message(message):
         embed.add_field(name="Source Code: ", value="https://github.com/armi-ne/python-tests", inline=False)
         embed.add_field(name="More Info: ", value="This bot was created by Armin as a project and aide for the Electric Skateboarding channel. Feel free to look at the source code and should you have any suggestions please feel free to message Armin :)", inline=False)
         embed.add_field(name="Mentions", value="Special thanks to Weinbee, Jinra, NeoZeon (helping with code) and Howser (custom logo)", inline=False)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(message.author, embed=embed)
     # Ben Pls
     if message.content.upper() in eastereggs.ben_pls:
@@ -123,6 +124,7 @@ async def on_message(message):
         embed.add_field(name="+brand boosted", value="Boosted", inline=True)
         embed.add_field(name="+brand carvon", value="Carvon", inline=True)
         embed.add_field(name="+brand diyeboard", value="DiyEboard", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(message.author, embed=embed)
     # Brand Help 2
     if message.content.upper() == "+BRANDHELP 2":
@@ -133,6 +135,7 @@ async def on_message(message):
         embed.add_field(name="+brand max", value="Max", inline=True)
         embed.add_field(name="+brand meepo", value="Meepo", inline=True)
         embed.add_field(name="+brand metroboard", value="Metroboard", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(message.author, embed=embed)
     # Brand Help 3
     if message.content.upper() == "+BRANDHELP 3":
@@ -143,6 +146,7 @@ async def on_message(message):
         embed.add_field(name="+brand riptide", value="Riptide", inline=True)
         embed.add_field(name="+brand trampa", value="Trampa", inline=True)
         embed.add_field(name="+brand wowgo", value="Wowgo", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(message.author, embed=embed)
     # Easter Eggs
     if (message.content.upper() == "+EASTER EGGS" or message.content.upper() == "+EASTER EGG" or message.content.upper() == "+EASTEREGG" or message.content.upper() == "+EASTEREGGS"):
@@ -152,6 +156,7 @@ async def on_message(message):
         embed.add_field(name="+Popcorn", value = "Only certain users can use this.")
         embed.add_field(name="@ mention Sophia '@Sofu'", value="You can thank Jinra for this", inline=False)
         embed.add_field(name="Who's your daddy?", value="Want to know who was responsible for the bots birth?", inline=False)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(message.author, embed=embed)
     # Help
     if message.content.upper() == "+HELP":
@@ -164,9 +169,11 @@ async def on_message(message):
         embed.add_field(name="+forum", value="Get link to electric-skateboard.builders", inline=False)
         embed.add_field(name="+reddit", value="Get link to the official esk8 Reddit", inline=False)
         embed.add_field(name="+server", value="Server Information", inline=False)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(message.author, embed=embed)
         embed2 = discord.Embed(title="Hello %s" % (message.author.name), color=0xFF0000)
         embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        embed2.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(message.channel, embed=embed2)
     # Moshi Moshi
     if message.content.upper() in eastereggs.moshi_moshi:
@@ -188,15 +195,18 @@ async def admin(ctx, help=None):
     if (ctx.message.author.id in adminslist.admin_id) is False:
         embed = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name=">:(", value="You're not an admin :(", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif help is None and ctx.message.author.id in adminslist.admin_id:
         embed = discord.Embed(title="Hello %s, here's the available Admin Commands" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Mute", value="Use \"+admin mute\" for more info", inline=False)
         embed.add_field(name="Clear", value="Use \"+admin clear\" for more info", inline=False)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif help == "clear":
         embed = discord.Embed(title="Hello %s, here's more information on +clear" % (ctx.message.author.name), color=0xFF0000)
-        embed.add_field(name="+clear #number of messages#", value="The clear function will delete 2-100 messages, specified by the admin")
+        embed.add_field(name="+clear #number of messages#", value="The clear function will delete 2-40 messages, specified by the admin")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif help == "mute" and ctx.message.author.id in adminslist.admin_id:
         embed = discord.Embed(title="Hello %s, here's more information on +mute" % (ctx.message.author.name), color=0xFF0000)
@@ -204,6 +214,7 @@ async def admin(ctx, help=None):
         embed.add_field(name="+unmute #user#", value="The unmute function allows you to remove the \"Muted\" role from a certain user", inline=False)
         embed.add_field(name="+mutelist", value="The mutelist function will provide the user ID's of currently muted users", inline=False)
         embed.add_field(name="+printmute #user#", value="The printmute function will provide more information on a mute incident, if the mute is still Active", inline=False)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
 
 
@@ -214,17 +225,21 @@ async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None)
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
         embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(ctx.message.author, embed=embed)
         embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
         embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        embed2.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed2)
     elif checkanswer == "TypeError":  # Type Error
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Please input numbers.", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif checkanswer == "NoDecimals":  # Series and Parallel whole numbers check
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Series/Parallel Error:", value="Sorry but Series and Parallel only accept whole numbers.", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif checkanswer == "Correct":  # Correct Input
         total_amphour, total_watthour, total_range_km, total_range_mi, total_nominal_voltage = batt.executer(series, parallel, amphour)
@@ -236,22 +251,27 @@ async def battery(ctx, series=None, parallel=None, amphour=None, codeblock=None)
         embed.add_field(name="Total Amp Hours:", value="{0:.2f}".format(float(total_amphour)) + "ah", inline=False)
         embed.add_field(name="Total Watt Hours:", value="{0:.2f}".format(float(total_watthour)) + "wh", inline=False)
         embed.add_field(name="Estimated Ranges:", value="{0:.2f}".format(float(total_range_km)) + "km, or " + "{0:.2f}".format(float(total_range_mi)) + "mi")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif checkanswer == "TooMany":  # Too many arguments
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Sorry but the bot only accepts 3 inputs which are: Series, Parallel and AmpHours.", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif checkanswer == "ValuesTooHigh":  # Values given are too high
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Value length error:", value="Sorry but the bot only accepts values from 0-99 for each field.", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     else:  # Just in case
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +battery command works" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Usage:", value="In order to make use of this command you are first required to have 3 pieces of information. 1) Series count. 2) Parallel count. 3) Amp hours per cell.")
         embed.add_field(name="Command Format:", value="+battery #Series value# #Parallel value# #Amp Hour value#")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(ctx.message.author, embed=embed)
         embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
         embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        embed2.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed2)
 
 
@@ -266,35 +286,30 @@ async def brand(ctx, brandin=None):
         embed.add_field(name="Facebook: ", value=facebook, inline=False)
         embed.add_field(name="Reddit: ", value=reddit, inline=False)
         embed.set_thumbnail(url=thumbnail)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     else:
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +brand command works" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Command Format: ", value="+brand #brand#")
         embed.add_field(name="List of Brands Available: ", value="Please use +brandhelp 1/2/3 for the corresponding pages of brands we have available")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(ctx.message.author, embed=embed)
 
 
 @bot.command(pass_context = True)  # +clear
 async def clear(ctx, number):
-    if ctx.message.author.id in adminslist.admin_id:
-        mgs = [] # Creates an empty list to place all the message objects
-        number = int(number) # Converts the number string into an int
-        time = datetime.datetime.now()  # Gets the time
-        import_time = time.strftime("%D, %H:%M:%S")  # Formats the time
-        sheet = client.open("ESK8 Server").sheet1
+    if ctx.message.author.id in adminslist.admin_id and int(number) < 41:
+        mgs = []  # Creates an empty list to place all the message objects
+        number = int(number)  # Converts the number string into an int
         async for x in bot.logs_from(ctx.message.channel, limit = number):  # For each message sent, with a limit defined by the number
             mgs.append(x)  # Adds the message to be deleted to the mgs list
         await bot.delete_messages(mgs)  # Deletes the messages in the mgs list
-        delete_order = 0
-        deleted_on = ["Deleted On", import_time, "By", ctx.message.author.name]
-        sheet.insert_row(deleted_on, 1)
-        for inside in mgs:
-            delete_order += 1
-            value_to_ins = [str(delete_order), str(inside.author), str(inside.content), str(inside.channel)]
-            sheet.insert_row(value_to_ins, 1)
-        new_empty_row = ["_", "_", "_", "_"]
-        sheet.insert_row(new_empty_row, 1)
-        sheet.insert_row(new_empty_row, 1)
+        dstore.upload_to_drive(ctx, mgs)  # Runs the function to store the deleted messages and their information on google drive
+    elif int(number) >= 41:
+        embed = discord.Embed(title="Clear", color=0xFF0000)
+        embed.add_field(name= "Too Many Messages", value="Sorry but the bot can only delete 2-40 messages at a time")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
     else:
         await bot.say("No :(")
 
@@ -306,13 +321,16 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +convert command works" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Command Format: ", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"")
         embed.add_field(name="Current Conversion Pairs: ", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(ctx.message.author, embed=embed)
         embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
         embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        embed2.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed2)
     elif checkanswer == "TypeError":  # Type Error
         embed = discord.Embed(title="Electric SkateBot Battery Calculator", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Please input numbers and letters where requested.", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif checkanswer == "Correct":  # Correct Input
         upcase1, upcase2, upcase4 = inputval.upper(), inputuni.upper(), desireduni.upper()
@@ -322,18 +340,22 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
         embed.add_field(name="Input Unit:", value=inputuni, inline=True)
         embed.add_field(name="Output Unit:", value=desireduni, inline=False)
         embed.add_field(name="Result", value=answer, inline=False)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif checkanswer == "TooMany":  # Too Many Arguments
         embed = discord.Embed(title="Electric SkateBot Converter", color=0xFF0000)
         embed.add_field(name="Arguments Error:", value="Sorry but the bot only accepts 4 inputs which are: inputValue, inputUnit, \"to\" and DesiredUnit.", inline=True)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     else:  # Just in case
         embed = discord.Embed(title="Hello %s, here's an explanation of how the +convert command works" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="Command Format: ", value="Use \"+convert #Number# #Unit# #to# #Desired Unit#\"")
         embed.add_field(name="Current Conversion Pairs: ", value="kph <-> mph｜km <-> mi｜cm <-> inch｜km <- Wh -> mi")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(ctx.message.author, embed=embed)
         embed2 = discord.Embed(title="Hello %s" % (ctx.message.author.name), color=0xFF0000)
         embed2.add_field(name="Help Messages: ", value="All help messages are sent to PM's to reduce clutter, please check your PM's.")
+        embed2.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed2)
 
 
@@ -347,22 +369,26 @@ async def mute(ctx, member: discord.Member, codeblock=None, *reason):
         role = discord.utils.get(member.server.roles, name='Muted')  # Gets the role we're adding
         await bot.add_roles(member, role)  # Adds the mute role
         muted_Name, muted_By, muted_Duration, muted_Time, muted_Reason = mutel.mute_data_formatter(member.name, ctx.message.author.name, codeblock, import_time, reason_final)
-        mutel.list_add(member.id,muted_Name, muted_By, muted_Duration, muted_Time, muted_Reason)
+        mutel.list_add(member. id, muted_Name, muted_By, muted_Duration, muted_Time, muted_Reason)
         embed = discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
         embed.add_field(name="Reason", value=reason_final)
         embed.add_field(name="Duration", value=str(codeblock) + " Minute(s)")
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)  # Sending to message where command was incited
         await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)  # Sending to automod log channel
         await asyncio.sleep(duration_in_min)  # Waiting the duration until mute role is removed
         await bot.remove_roles(member, role)
         embed2 = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by Electric Skatebot!".format(member), color=0xFF0000)
+        embed2.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed2)
         del mutel.muted_users[member.id]
     elif checkanswer == "Missing Time":
         embed = discord.Embed(title="No Time.", description="Please include the mute duration (in minute(s))", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     else:
         embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
 
 
@@ -372,11 +398,14 @@ async def unmute(ctx, member: discord.Member):
         role = discord.utils.get(member.server.roles, name='Muted')
         await bot.remove_roles(member, role)
         embed = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)
         del mutel.muted_users[member.id]
     else:
         embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
 
 
@@ -388,6 +417,7 @@ async def printmute(ctx, member: discord.Member):
     embed.add_field(name="Duration: ", value=mutel.muted_users[member.id][2], inline=True)
     embed.add_field(name="Time: ", value=mutel.muted_users[member.id][3], inline=True)
     embed.add_field(name="Reason: ", value=mutel.muted_users[member.id][4], inline=False)
+    embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
     await bot.say(embed=embed)
 
 
@@ -395,6 +425,7 @@ async def printmute(ctx, member: discord.Member):
 async def mutelist(ctx):
     embed = discord.Embed(name="Mute List", description="Current Muted Users", color=0xFF0000)
     embed.add_field(name="ID's", value=mutel.muted_list())
+    embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
     await bot.say(embed=embed)
 
 
@@ -406,6 +437,7 @@ async def server(ctx):
     embed.add_field(name="Number of Channels", value=(len(ctx.message.server.channels)))
     embed.add_field(name="Owner", value=(ctx.message.server.owner))
     embed.set_thumbnail(url=ctx.message.server.icon_url)
+    embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
     await bot.say(embed=embed)
 
 
