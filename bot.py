@@ -7,6 +7,8 @@ import time
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import lbry.admins as adminslist
+import lbry.ban_command as banc
+import lbry.ban_list as banl
 import lbry.battery as batt
 import lbry.brand as brand_
 import lbry.converter as conv
@@ -19,9 +21,8 @@ import lbry.store_in_drive as dstore
 
 # Google Sheets
 scope = ["https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/Administrator/Desktop/Electric-SkateBot-Python-Master/client_secret.json", scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/Administrator/Dropbox/Coding/Coding Projects/Python/Electric-SkateBot_Server_Test/client_secret.json", scope)
 client = gspread.authorize(credentials)
-
 bot = commands.Bot(command_prefix="+")
 bot.remove_command("help")
 
@@ -31,11 +32,8 @@ async def on_member_join(member):
     channel = bot.get_channel("342965746948636672")
     server_ = channel.server
     role_to_assign = discord.utils.get(server_.roles, name="Muted")
-    role_to_assign_2 = discord.utils.get(server_.roles, name="E-Boarders")
     if member.id in mutel.muted_users:
         await bot.add_roles(member, role_to_assign)
-    if role_to_assign_2 not in member.server.roles:
-        await bot.add_roles(member, role_to_assign_2)
 
 
 @bot.event
@@ -199,8 +197,15 @@ async def admin(ctx, help=None):
         await bot.say(embed=embed)
     elif help is None and ctx.message.author.id in adminslist.admin_id:
         embed = discord.Embed(title="Hello %s, here's the available Admin Commands" % (ctx.message.author.name), color=0xFF0000)
-        embed.add_field(name="Mute", value="Use \"+admin mute\" for more info", inline=False)
+        embed.add_field(name="Ban", value="Use \"+admin ban\" for more info", inline=False)
         embed.add_field(name="Clear", value="Use \"+admin clear\" for more info", inline=False)
+        embed.add_field(name="Mute", value="Use \"+admin mute\" for more info", inline=False)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
+    elif help == "ban":
+        embed = discord.Embed(title="Hello %s, here's more information on +ban" % (ctx.message.author.name), color=0xFF0000)
+        embed.add_field(name="+ban #user# #reason#", value="The ban function will ban the user in question.")
+        embed.add_field(name="+unban #userid#", value="The unban function will unban the user in question.")
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif help == "clear":
@@ -214,6 +219,48 @@ async def admin(ctx, help=None):
         embed.add_field(name="+unmute #user#", value="The unmute function allows you to remove the \"Muted\" role from a certain user", inline=False)
         embed.add_field(name="+mutelist", value="The mutelist function will provide the user ID's of currently muted users", inline=False)
         embed.add_field(name="+printmute #user#", value="The printmute function will provide more information on a mute incident, if the mute is still Active", inline=False)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
+
+
+@bot.command(pass_context = True)  # +ban
+async def ban(ctx, member: discord.Member, codeblock=None, *reason):
+    checkanswer = banc.checks(codeblock)  # Checks input
+    time = datetime.datetime.now()
+    import_time = time.strftime("%D, %H:%M:%S")
+    if ctx.message.author.id in adminslist.admin_id and checkanswer == "Correct":
+        await bot.ban(member, delete_message_days=6)
+        reason = banc.reason(codeblock, reason)
+        banned_Name, banned_By, banned_Time, banned_Reason = banl.mute_data_formatter(member.name, ctx.message.author.name,  import_time, reason)
+        banned_ID = str(member.id)
+        embed = discord.Embed(title="User Banned!", description="**{0}** was banned by **{1}**!".format(banned_Name, banned_By), color=0xFF0000)
+        embed.add_field(name="Reason", value=banned_Reason)
+        embed.add_field(name="User ID: ", value=banned_ID)
+        embed.add_field(name="Time of Banning", value=banned_Time)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)  # Sending to message where command was incited
+        await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)  # Sending to automod log channel
+    elif checkanswer == "Missing Reason":
+        embed = discord.Embed(title="No Reason.", description="Please include the ban reason", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
+    else:
+        embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
+
+
+@bot.command(pass_context=True)  # +unban
+async def unban(ctx, userarg1):
+    user_to_unban = await bot.get_user_info(userarg1)
+    if ctx.message.author.id in adminslist.admin_id:
+        await bot.unban(ctx.message.server, user_to_unban)
+        embed = discord.Embed(title="User Unbanned!", description="**{0}** was unbanned by **{1}**!".format(user_to_unban.name, ctx.message.author), color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
+        await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)
+    else:
+        embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
 
@@ -298,16 +345,16 @@ async def brand(ctx, brandin=None):
 
 @bot.command(pass_context = True)  # +clear
 async def clear(ctx, number):
-    if ctx.message.author.id in adminslist.admin_id and int(number) < 41:
+    if ctx.message.author.id in adminslist.admin_id and int(number) < 101:
         mgs = []  # Creates an empty list to place all the message objects
         number = int(number)  # Converts the number string into an int
         async for x in bot.logs_from(ctx.message.channel, limit = number):  # For each message sent, with a limit defined by the number
             mgs.append(x)  # Adds the message to be deleted to the mgs list
         await bot.delete_messages(mgs)  # Deletes the messages in the mgs list
-        dstore.upload_to_drive(ctx, mgs)  # Runs the function to store the deleted messages and their information on google drive
-    elif int(number) >= 41:
+        dstore.upload_to_drive_new(ctx, mgs)  # Runs the function to store the deleted messages and their information on google drive
+    elif int(number) >= 101:
         embed = discord.Embed(title="Clear", color=0xFF0000)
-        embed.add_field(name= "Too Many Messages", value="Sorry but the bot can only delete 2-40 messages at a time")
+        embed.add_field(name= "Too Many Messages", value="Sorry but the bot can only delete 2-100 messages at a time")
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     else:
@@ -431,11 +478,14 @@ async def mutelist(ctx):
 
 @bot.command(pass_context=True)  # +server
 async def server(ctx):
+    raw_creation_time = ctx.message.server.created_at
+    formatted_time = raw_creation_time.strftime("%D, %H:%M:%S")
     embed = discord.Embed(name="{}'s info".format(ctx.message.server.name), description="", color=0xFF0000)
     embed.add_field(name="Name", value=ctx.message.server.name, inline=True)
     embed.add_field(name="Number of e-Boarders", value=(len(ctx.message.server.members) - 3))
     embed.add_field(name="Number of Channels", value=(len(ctx.message.server.channels)))
     embed.add_field(name="Owner", value=(ctx.message.server.owner))
+    embed.add_field(name="Created: ", value=formatted_time)
     embed.set_thumbnail(url=ctx.message.server.icon_url)
     embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
     await bot.say(embed=embed)
