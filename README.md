@@ -1,3 +1,17 @@
+# Update 4.2, 30/03/2018
+
+_____________________________________________________________________________
+More Info:
+
+1) Added +ban command
+
+2) Removed the 40 message limit to +clear command, improved how the bot now uploads the messages to google drive and have managed to reduce the API calls from a maximum possibility of 100 to 3, now it's near impossible to hit the quota limit, although interpreting the data is harder (I find that copying the colums all at once, pasting in Microsoft word, resizing the font to around 1-2 and then zooming in fixes this although others might find it painstaking)
+_____________________________________________________________________________
+Date 30/03/2018
+
+Total hours spent learning python: 150
+
+Total days spend learning python: 25
 # Update 4.1, 24/03/2018
 
 _____________________________________________________________________________
