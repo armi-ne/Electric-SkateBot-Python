@@ -21,7 +21,7 @@ import lbry.store_in_drive as dstore
 
 # Google Sheets
 scope = ["https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/Administrator/Dropbox/Coding/Coding Projects/Python/Electric-SkateBot_Server_Test/client_secret.json", scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_name("", scope)
 client = gspread.authorize(credentials)
 bot = commands.Bot(command_prefix="+")
 bot.remove_command("help")
@@ -41,10 +41,15 @@ async def on_ready():
     await bot.change_presence(game=discord.Game(name='+help for more info'))
     print("Hi, my name is " + bot.user.name)
     print("My ID is: " + bot.user.id)
+    time_2 = datetime.datetime.now()
+    import_time_2 = time_2.strftime("%D, %H:%M:%S")
+    time_when_launched = import_time_2
     while True:
         # Print Mutes
         mutel.write_to_file()
         print("Mutes List Saved")
+        time = datetime.datetime.now()
+        import_time = time.strftime("%D, %H:%M:%S")
         # Role Auto Assigner
         channel = bot.get_channel("425714572981436436")  # Getting the channel where roles are assigned
         tick = {}  # Creating 2 dictionaries for Ticks and Crosses
@@ -67,10 +72,12 @@ async def on_ready():
         tick.clear()
         cross.clear()
         print("Dictionaries Cleared")
-        print("Going to sleep for 2 Minutes")
+        print("Launched on: " + time_when_launched)
+        print("Time is: " + import_time)
+        print("Going to sleep for 20 Minutes")
         print(" ")
-        # Sleep for 2 minutes then run again
-        await asyncio.sleep(120)
+        # Sleep for 20 minutes then run again
+        await asyncio.sleep(1200)
 
 
 async def react_messages(cross, tick):
@@ -85,19 +92,21 @@ async def react_messages(cross, tick):
             for reactor in reactors:
                 reactor_name_id = reactor.id
                 reactees = server_.get_member(reactor_name_id)
+                if reactees == None:
+                    continue
+                if reactor.id == "425732605342908426" or reactor.id == "224311966058020875":
+                    continue
                 joined = str(reactor.id) + str(x.content)
                 check_in_cross = not(str(joined) in tick)
                 check_in_tick = not(str(joined) in cross)
-                if reactor.id == "425732605342908426" or reactor.id == "224311966058020875":
-                    asd = "asd"
-                elif check_in_tick is False and check_in_cross is False:
-                    azy = "yza"
+                if check_in_tick is False and check_in_cross is False:
+                    continue
                 elif (role_to_assign in reactees.roles) and reacts == "❌":
                     await bot.remove_roles(reactees, role_to_assign)
                 elif (len(reactees.roles) < 7) and (role_to_assign not in reactees.roles) and reacts == "✅":
                     await bot.add_roles(reactees, role_to_assign)
                 else:
-                    azy = "yza"
+                    continue
 
 
 @bot.event  # Help Commands
@@ -210,7 +219,7 @@ async def admin(ctx, help=None):
         await bot.say(embed=embed)
     elif help == "clear":
         embed = discord.Embed(title="Hello %s, here's more information on +clear" % (ctx.message.author.name), color=0xFF0000)
-        embed.add_field(name="+clear #number of messages#", value="The clear function will delete 2-40 messages, specified by the admin")
+        embed.add_field(name="+clear #number of messages#", value="The clear function will delete 2-100 messages, specified by the admin")
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif help == "mute" and ctx.message.author.id in adminslist.admin_id:
