@@ -1,0 +1,1 @@
+regions_list = ["Africa", "Asia", "Korea", "Singapore", "Philippines", "Australia", "Canada", "Europe", "Estonia", "Germany", "Latvia", "Lithuania", "Netherlands", "Norway", "Spain", "Sweden", "North America", "South America"]
