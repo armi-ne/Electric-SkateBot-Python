@@ -1,8 +1,4 @@
-banned_users = {
-}
-
-
-def mute_data_formatter(banned_Name, banned_By, banned_Time, banned_Reason):
+def ban_data_formatter(banned_Name, banned_By, banned_Time, banned_Reason):
     name = str(banned_Name)
     by = str(banned_By)
     time = "Time: " + banned_Time
