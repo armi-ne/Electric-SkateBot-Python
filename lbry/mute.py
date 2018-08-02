@@ -75,10 +75,6 @@ def mutes_check():
             key = ID
             val = [str(muted_on), str(unmuted_on)]
             mutesdic[key] = val
-    print("Mutes Dictionary:")
-    print("")
-    print(mutesdic)
-    print("")
 
 
 def mute_main_function(muted_ID, muted_Name, muted_By, muted_Duration, muted_Time, muted_Reason):
