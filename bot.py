@@ -14,75 +14,125 @@ import lbry.brand as brand_
 import lbry.converter as conv
 import lbry.easter_eggs as eastereggs
 import lbry.input_check as incheck
-import lbry.mute_command as mutec
-import lbry.mute_list as mutel
+import lbry.mute as mutem
+import lbry.regions as regions
+import lbry.roles as roles_list
 import lbry.role_assigner as roleassi
 import lbry.store_in_drive as dstore
 
 # Google Sheets
 scope = ["https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name("", scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/Administrator/Dropbox/Coding/Coding Projects/Python/Electric-SkateBot/client_secret.json", scope)
 client = gspread.authorize(credentials)
-bot = commands.Bot(command_prefix="+")
-bot.remove_command("help")
+bot = commands.Bot(command_prefix="+") # Setting the prefix for the bot
+bot.remove_command("help") # Removing the default help command
 
 
 @bot.event
-async def on_member_join(member):
-    channel = bot.get_channel("342965746948636672")
-    server_ = channel.server
-    role_to_assign = discord.utils.get(server_.roles, name="Muted")
-    if member.id in mutel.muted_users:
-        await bot.add_roles(member, role_to_assign)
+async def on_member_join(member): # When a member joins, run mute checks
+    channel = bot.get_channel("342965746948636672") # Getting channel info, so we can get server info later
+    server_ = channel.server # Getting server info using channel
+    role_to_assign = discord.utils.get(server_.roles, name="Muted") # Getting the role to assign
+    if member.id in mutem.mutesdic: # If the users ID is in the mutes dictionary
+        unmuted_on = mutem.mutesdic[member.id][1] # Getting the time they're supposed to be unmuted at
+        parsed = datetime.datetime.strptime(unmuted_on, "%Y-%m-%d %H:%M:%S") # Changing from string to a datetime object
+        if (datetime.datetime.now()) < parsed: # If the time now is before when they're supposed to be unmuted
+            await bot.add_roles(member, role_to_assign) # Add mute role
 
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(game=discord.Game(name='+help for more info'))
+    await bot.change_presence(game=discord.Game(name='+help for more info')) # Changes bots presence information to display "+help for more info"
     print("Hi, my name is " + bot.user.name)
     print("My ID is: " + bot.user.id)
-    time_2 = datetime.datetime.now()
-    import_time_2 = time_2.strftime("%D, %H:%M:%S")
-    time_when_launched = import_time_2
+    mutem.mutes_check() # Run the mutes check function in the mute_main file
+    time_when_launched = datetime.datetime.now()
+    await mutes_checker() #Check and unmute any users who should not be muted, or await however long it'll take and unmute them on time
     while True:
-        # Print Mutes
-        mutel.write_to_file()
-        print("Mutes List Saved")
         time = datetime.datetime.now()
-        import_time = time.strftime("%D, %H:%M:%S")
-        # Role Auto Assigner
-        channel = bot.get_channel("425714572981436436")  # Getting the channel where roles are assigned
-        tick = {}  # Creating 2 dictionaries for Ticks and Crosses
-        cross = {}
-        # Reacts Dictionary Creator
-        async for x in bot.logs_from(channel, limit=100):
-            for reaction in x.reactions:
-                reactors = await bot.get_reaction_users(reaction)
-                for reactor in reactors:
-                    if reactor.id == "425732605342908426":
-                        asd = "asd"
-                    elif reaction.emoji == "✅":
-                        joined = str(reactor.id) + str(x.content)
-                        tick.update({str(joined):str(joined)})
-                    elif reaction.emoji == "❌":
-                        joined = str(reactor.id) + str(x.content)
-                        cross.update({str(joined):str(joined)})
-        await react_messages(cross, tick)
-        print("Roles Assigned")
-        tick.clear()
-        cross.clear()
+        await react_messages() # Role auto assigner
+        await react_messages_regions() # Regions auto assigner
         print("Dictionaries Cleared")
         print("Launched on: " + time_when_launched)
-        print("Time is: " + import_time)
-        print("Going to sleep for 20 Minutes")
+        print("Time is: " + time)
+        print("Going to sleep for 40 Minutes")
         print(" ")
-        # Sleep for 20 minutes then run again
-        await asyncio.sleep(1200)
+        await asyncio.sleep(2400) # Sleep for 40 minutes then run again
 
 
-async def react_messages(cross, tick):
-    channel = bot.get_channel("425714572981436436")
+async def mutes_checker():
+    channel = bot.get_channel("425714572981436436") # Get Channel
+    server = channel.server # Get Server
+    for key, value in mutem.mutesdic.items(): # For each member and information provided in mutes dictionary.
+        time_now = datetime.datetime.now() # Get time right now
+        unmuted_on = value[1] # When they'll be unmuted, loaded as a string from same list in dictionary as muted_on.
+        unmuted_on_parsed = datetime.datetime.strptime(unmuted_on, "%Y-%m-%d %H:%M:%S") # Turn unmuted_on from a string into a datetime object.
+        member = server.get_member(key) # Get the member object using the server get_member function using the User ID provided from they Key of each dictionary entry.
+        role = discord.utils.get(member.server.roles, name='Muted') # Get the role to  
+        if (unmuted_on_parsed < time_now) and role in member.roles: # If the time now has passed the unmute time and the user has the muted role, remove the role.
+            await bot.remove_roles(member, role)
+        elif (unmuted_on_parsed < time_now) and role not in member.roles: # If the time now has passed the unmute time but the user doesn't have the muted role, continue.
+            continue
+        elif (unmuted_on_parsed > time_now) and role in member.roles: # If the time now hasn't passed the unmute time and the user still has the muted role.
+            time_left = unmuted_on_parsed - time_now # Time left calculated by subtracting time now from unmute_time
+            time_left_seconds = time_left.total_seconds() # Time left turned into seconds for use with asyncio.sleep() function
+            if key is not None: # If the key is not a nonetype (user ID exists)
+                time_left_seconds2 = str(time_left_seconds).split('.')[0] # Time left in seconds is now stripped of anything passed the decimal point, turning it into a whole number for ease of use.
+                await bot.send_message(bot.get_channel(id='371587856042557440'), "+unmutebot " + str(key) + " " + str(time_left_seconds2)) # Bot invokes the +unmutebot on_message command
+        elif role not in member.roles: # If the bot/admins had previously removed the role, continue.
+            continue
+        await asyncio.sleep(10) # Sleep for 10 seconds before going to next user, this is so the on_message part of the bot has enough time to cycle through it's process.
+
+
+async def react_messages():
+    channel = bot.get_channel("425714572981436436") #Get Channel ID and assign to Channel variable.
+    server_ = channel.server #Get the server via channel which was defined before.
+    tick = {} # Create two empty dictionaries for users who will have reacted with a cross or a tick.
+    cross = {} # Create two empty dictionaries for users who will have reacted with a cross or a tick.
+    async for x in bot.logs_from(channel, limit=100): # Get the last 100 messages in the channel.
+        role_name = x.content # Assign the role_name that we'll use as the content of the message.
+        role_to_assign = discord.utils.get(server_.roles, name=role_name) # Using the role_name we will now get the role object to assign.
+        for reaction in x.reactions: # For each reaction in each message's reactions.
+            reacts = reaction.emoji # Assign the reaction emoji (either the tick or cross) to reacts.
+            reactors = await bot.get_reaction_users(reaction) # Get user objects for each reactor and assign them to the reactors variable.
+            for reactor in reactors: # For each reactor in reactors.
+                if reaction.emoji == "✅": # If the reaction emoji is a tick.
+                    joined = str(reactor.id) + str(x.content)
+                    tick.update({str(joined):str(joined)}) # Format the data to input and add the relevant information (user_ID and role) to the ticks dictionary.
+                elif reaction.emoji == "❌": # If the reaction emoji is a cross.
+                    joined = str(reactor.id) + str(x.content)
+                    cross.update({str(joined):str(joined)}) # Format the data to input and add the relevant information (user_ID and role) to the cross dictionary.
+                else:
+                    continue
+                # Now the bot will cycle through multiple if statements in order to decide whether or not to skip a user or assign/remove the role in question
+                reactor_name_id = reactor.id
+                reactees = server_.get_member(reactor_name_id)
+                if reactees == None:
+                    continue
+                if reactor.id == "417386039691182080":
+                    continue
+                joined = str(reactor.id) + str(x.content)
+                check_in_cross = not(str(joined) in tick)
+                check_in_tick = not(str(joined) in cross)
+                if check_in_tick is False and check_in_cross is False:
+                    continue
+                elif check_in_tick is True and check_in_cross is True:
+                    continue
+                elif (role_to_assign in reactees.roles) and reacts == "❌":
+                    await bot.remove_roles(reactees, role_to_assign)
+                elif (len(reactees.roles) < 11) and (role_to_assign not in reactees.roles) and reacts == "✅":
+                    await bot.add_roles(reactees, role_to_assign)
+                else:
+                    continue
+                tick.clear()
+                cross.clear() 
+
+
+async def react_messages_regions(): # Same concept as reaction roles assigner but with a different channel
+    channel = bot.get_channel("470635791110897674")
     server_ = channel.server
+    tick = {}
+    cross = {}
     async for x in bot.logs_from(channel, limit=100):
         role_name = x.content
         role_to_assign = discord.utils.get(server_.roles, name=role_name)
@@ -90,23 +140,35 @@ async def react_messages(cross, tick):
             reacts = reaction.emoji
             reactors = await bot.get_reaction_users(reaction)
             for reactor in reactors:
+                if reaction.emoji == "✅":
+                    joined = str(reactor.id) + str(x.content)
+                    tick.update({str(joined):str(joined)})
+                elif reaction.emoji == "❌":
+                    joined = str(reactor.id) + str(x.content)
+                    cross.update({str(joined):str(joined)})
+                else:
+                    continue
                 reactor_name_id = reactor.id
                 reactees = server_.get_member(reactor_name_id)
                 if reactees == None:
                     continue
-                if reactor.id == "425732605342908426" or reactor.id == "224311966058020875":
+                if reactor.id == "425732605342908426" or reactor.id == "224311966058020875" or reactor.id == "417386039691182080":
                     continue
                 joined = str(reactor.id) + str(x.content)
                 check_in_cross = not(str(joined) in tick)
                 check_in_tick = not(str(joined) in cross)
                 if check_in_tick is False and check_in_cross is False:
                     continue
+                elif check_in_tick is True and check_in_cross is True:
+                    continue
                 elif (role_to_assign in reactees.roles) and reacts == "❌":
                     await bot.remove_roles(reactees, role_to_assign)
-                elif (len(reactees.roles) < 7) and (role_to_assign not in reactees.roles) and reacts == "✅":
+                elif (len(reactees.roles) < 11) and (role_to_assign not in reactees.roles) and reacts == "✅":
                     await bot.add_roles(reactees, role_to_assign)
                 else:
                     continue
+                tick.clear()
+                cross.clear()
 
 
 @bot.event  # Help Commands
@@ -191,6 +253,30 @@ async def on_message(message):
     # Sofu
     if ("209852808977973250" in message.raw_mentions):
         await bot.send_message(message.channel, "💸 :bird: T W I T T E R  E N G  M O N E Y :bird: 💸")
+    # Unmutebot
+    if message.content.startswith("+unmutebot") and message.author.id == "417386039691182080":
+        prefix_and_command, ID, time_to_wait = message.content.split(" ")
+        channel = bot.get_channel("425714572981436436")
+        server = channel.server
+        member = server.get_member(ID)
+        role = discord.utils.get(member.server.roles, name='Muted')
+        embed = discord.Embed(title="User Will Be Unmuted!", description="**{0}** will be unmuted by **{1}** in **{2}** minutes!".format(member.name, message.author.name, str(int(int(time_to_wait)/60))), color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)
+        mgs = []  # Creates an empty list to place all the message objects
+        number = (2)  # Converts the number string into an int
+        async for x in bot.logs_from(message.channel, limit = number):  # For each message sent, with a limit defined by the number
+            mgs.append(x)  # Adds the message to be deleted to the mgs list
+        await asyncio.sleep(2)
+        await bot.delete_messages(mgs)
+        await asyncio.sleep(2)
+        await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)
+        await asyncio.sleep(int(time_to_wait))
+        await bot.remove_roles(member, role)
+        embed = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by **{1}**!".format(member.name, message.author.name), color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
+        await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)
     # Who's your daddy?
     if message.content.upper() in eastereggs.whos_your_daddy:
         await bot.send_message(message.channel, "Armin Senpai")
@@ -213,21 +299,19 @@ async def admin(ctx, help=None):
         await bot.say(embed=embed)
     elif help == "ban":
         embed = discord.Embed(title="Hello %s, here's more information on +ban" % (ctx.message.author.name), color=0xFF0000)
-        embed.add_field(name="+ban #user# #reason#", value="The ban function will ban the user in question.")
+        embed.add_field(name="+ban #user# #number of days worth of messages to delete# #reason#", value="The ban function will ban the user in question.")
         embed.add_field(name="+unban #userid#", value="The unban function will unban the user in question.")
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif help == "clear":
         embed = discord.Embed(title="Hello %s, here's more information on +clear" % (ctx.message.author.name), color=0xFF0000)
-        embed.add_field(name="+clear #number of messages#", value="The clear function will delete 2-100 messages, specified by the admin")
+        embed.add_field(name="+clear #number of messages#", value="The clear function will delete 1-100 messages, specified by the admin")
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     elif help == "mute" and ctx.message.author.id in adminslist.admin_id:
         embed = discord.Embed(title="Hello %s, here's more information on +mute" % (ctx.message.author.name), color=0xFF0000)
         embed.add_field(name="+mute #user# #duration# #reason#", value="The mute function allows you to mute a certain user for a specific period of time. Make sure you include the duration and reason.", inline=False)
         embed.add_field(name="+unmute #user#", value="The unmute function allows you to remove the \"Muted\" role from a certain user", inline=False)
-        embed.add_field(name="+mutelist", value="The mutelist function will provide the user ID's of currently muted users", inline=False)
-        embed.add_field(name="+printmute #user#", value="The printmute function will provide more information on a mute incident, if the mute is still Active", inline=False)
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
 
@@ -237,20 +321,33 @@ async def ban(ctx, member: discord.Member, codeblock=None, *reason):
     checkanswer = banc.checks(codeblock)  # Checks input
     time = datetime.datetime.now()
     import_time = time.strftime("%D, %H:%M:%S")
-    if ctx.message.author.id in adminslist.admin_id and checkanswer == "Correct":
-        await bot.ban(member, delete_message_days=6)
-        reason = banc.reason(codeblock, reason)
+    if ctx.message.author.id in adminslist.admin_id and codeblock.isnumeric() and int(codeblock)<=7 and checkanswer == "Correct":
+        await bot.ban(member, delete_message_days=int(codeblock))
+        reason = banc.reason(reason)
         banned_Name, banned_By, banned_Time, banned_Reason = banl.mute_data_formatter(member.name, ctx.message.author.name,  import_time, reason)
         banned_ID = str(member.id)
         embed = discord.Embed(title="User Banned!", description="**{0}** was banned by **{1}**!".format(banned_Name, banned_By), color=0xFF0000)
         embed.add_field(name="Reason", value=banned_Reason)
         embed.add_field(name="User ID: ", value=banned_ID)
         embed.add_field(name="Time of Banning", value=banned_Time)
+        embed.add_field(name="Deleted Message Days", value=str(codeblock))
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)  # Sending to message where command was incited
         await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)  # Sending to automod log channel
+    elif ctx.message.author.id not in adminslist.admin_id:
+        embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
+    elif not codeblock.isnumeric():
+        embed = discord.Embed(title="Please input # of days worth of messages you'd like to delete.", description="+ban @user #days worth of messages to delete# reason", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
+    elif int(codeblock)>=8:
+        embed = discord.Embed(title="Deleted Message Days value too high", description="You can only delete up to 7 days worth of messages. Please ammend.", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
     elif checkanswer == "Missing Reason":
-        embed = discord.Embed(title="No Reason.", description="Please include the ban reason", color=0xFF0000)
+        embed = discord.Embed(title="No Reason or Message Deletion Date.", description="Please include the ban reason / # of days worth of messages you'd like to delete.", color=0xFF0000)
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     else:
@@ -356,14 +453,14 @@ async def brand(ctx, brandin=None):
 async def clear(ctx, number):
     if ctx.message.author.id in adminslist.admin_id and int(number) < 101:
         mgs = []  # Creates an empty list to place all the message objects
-        number = int(number)  # Converts the number string into an int
+        number = (int(number) + 1)  # Converts the number string into an int
         async for x in bot.logs_from(ctx.message.channel, limit = number):  # For each message sent, with a limit defined by the number
             mgs.append(x)  # Adds the message to be deleted to the mgs list
         await bot.delete_messages(mgs)  # Deletes the messages in the mgs list
         dstore.upload_to_drive_new(ctx, mgs)  # Runs the function to store the deleted messages and their information on google drive
     elif int(number) >= 101:
         embed = discord.Embed(title="Clear", color=0xFF0000)
-        embed.add_field(name= "Too Many Messages", value="Sorry but the bot can only delete 2-100 messages at a time")
+        embed.add_field(name= "Too Many Messages", value="Sorry but the bot can only delete 1-100 messages at a time")
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
     else:
@@ -417,27 +514,36 @@ async def convert(ctx, inputval=None, inputuni=None, to_text=None, desireduni=No
 
 @bot.command(pass_context = True)  # +mute
 async def mute(ctx, member: discord.Member, codeblock=None, *reason):
-    checkanswer = mutec.checks(codeblock)  # Checks input
-    time = datetime.datetime.now()
-    import_time = time.strftime("%D, %H:%M:%S")
+    checkanswer = mutem.checks(codeblock)
+    #Get all time data
+    day = time.strftime("%D")
+    month, day, year_not_final = day.split("/")
+    year = "20" + str(year_not_final)
+    hour = time.strftime("%H")
+    minute = time.strftime("%M")
+    second = time.strftime("%S")
+    time_and_date = [hour, minute, second, day, month, year]
+    duration_seconds = int(codeblock)*60
     if ctx.message.author.id in adminslist.admin_id and checkanswer == "Correct":  # If input matches requirements
-        duration_in_min, reason_final = mutec.duration_and_reason(codeblock, reason)  # Gets the duration in minutes and the reason
+        reason_final = mutem.reason(reason)
         role = discord.utils.get(member.server.roles, name='Muted')  # Gets the role we're adding
         await bot.add_roles(member, role)  # Adds the mute role
-        muted_Name, muted_By, muted_Duration, muted_Time, muted_Reason = mutel.mute_data_formatter(member.name, ctx.message.author.name, codeblock, import_time, reason_final)
-        mutel.list_add(member. id, muted_Name, muted_By, muted_Duration, muted_Time, muted_Reason)
+        mutem.mute_main_function(member.id, member.name, ctx.message.author.name, duration_seconds, time_and_date, reason_final)
         embed = discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
         embed.add_field(name="Reason", value=reason_final)
         embed.add_field(name="Duration", value=str(codeblock) + " Minute(s)")
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
-        await bot.say(embed=embed)  # Sending to message where command was incited
+        await bot.say(embed=embed)  # Sending message to where command was incited
         await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)  # Sending to automod log channel
-        await asyncio.sleep(duration_in_min)  # Waiting the duration until mute role is removed
+        await asyncio.sleep(duration_seconds)  # Waiting the duration until mute role is removed
         await bot.remove_roles(member, role)
         embed2 = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by Electric Skatebot!".format(member), color=0xFF0000)
         embed2.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed2)
-        del mutel.muted_users[member.id]
+    elif checkanswer == "Time given not number":
+        embed = discord.Embed(title="No Time.", description="Time given not number", color=0xFF0000)
+        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
+        await bot.say(embed=embed)
     elif checkanswer == "Missing Time":
         embed = discord.Embed(title="No Time.", description="Please include the mute duration (in minute(s))", color=0xFF0000)
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
@@ -456,33 +562,65 @@ async def unmute(ctx, member: discord.Member):
         embed = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by **{1}**!".format(member, ctx.message.author), color=0xFF0000)
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
-        embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.send_message(bot.get_channel(id='371587856042557440'), embed=embed)
-        del mutel.muted_users[member.id]
     else:
         embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xFF0000)
         embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
         await bot.say(embed=embed)
 
 
-@bot.command(pass_context=True)  # +printmutes
-async def printmute(ctx, member: discord.Member):
-    embed = discord.Embed(name="Mute List", description="", color=0xFF0000)
-    embed.add_field(name="Username: ", value=mutel.muted_users[member.id][0], inline=True)
-    embed.add_field(name="Muted By: ", value=mutel.muted_users[member.id][1], inline=True)
-    embed.add_field(name="Duration: ", value=mutel.muted_users[member.id][2], inline=True)
-    embed.add_field(name="Time: ", value=mutel.muted_users[member.id][3], inline=True)
-    embed.add_field(name="Reason: ", value=mutel.muted_users[member.id][4], inline=False)
-    embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
-    await bot.say(embed=embed)
+@bot.command(pass_context = True)  # +roleupdate
+async def roles(ctx):
+    channel = bot.get_channel("425714572981436436")
+    server_ = channel.server
+    if ctx.message.author.id in adminslist.admin_id:    #Check if user is Admin
+        number = 200    #Limit of messages to be deleted
+        counter = 0     #Counter of how many messages have been deleted 1-by-1 so far
+        role_counter = 0        #Can't put it into words but this makes sure the second for loops (role duplicate checker) work, so don't delete it.
+        async for x in bot.logs_from(ctx.message.channel, limit = number):  # For each message sent, with a limit defined by the number
+            if counter<number:  #If counter of deleted messages is lower than limit, carry on deleting
+                await bot.delete_message(x) 
+                counter += 1
+                await asyncio.sleep(1.5)
+        for role in roles_list.roles:   #For each role in role list, if the role doesn't exist already, create a new one, else, add to the counter
+            role_to_check = discord.utils.get(server_.roles, name=role)
+            if role_to_check in server_.roles:
+                 role_counter += 1
+            else:
+                await bot.create_role(server_, name = str(role))
+            react_message = await bot.say(str(role)) #Assigning the message to post of role name to a variable, and posting the role name message
+            await bot.add_reaction(react_message, "✅")  #Adding tick react to message
+            await bot.add_reaction(react_message, "❌")  #Adding cross react to message
+            await asyncio.sleep(2)  #Sleep for 2 seconds so no rate limiting
+    else:
+        print("error")
 
 
-@bot.command(pass_context=True)  # +mutelist
-async def mutelist(ctx):
-    embed = discord.Embed(name="Mute List", description="Current Muted Users", color=0xFF0000)
-    embed.add_field(name="ID's", value=mutel.muted_list())
-    embed.set_footer(text="Electric SkateBot", icon_url="https://i.imgur.com/L38PKZR.png")
-    await bot.say(embed=embed)
+@bot.command(pass_context = True)  # +regions update
+async def regionsup(ctx):
+    channel = bot.get_channel("470635791110897674")
+    server_ = channel.server
+    if ctx.message.author.id in adminslist.admin_id:    #Check if user is Admin
+        number = 200    #Limit of messages to be deleted
+        counter = 0     #Counter of how many messages have been deleted 1-by-1 so far
+        role_counter = 0        #Can't put it into words but this makes sure the second for loops (role duplicate checker) work, so don't delete it.
+        async for x in bot.logs_from(ctx.message.channel, limit = number):  # For each message sent, with a limit defined by the number
+            if counter<number:  #If counter of deleted messages is lower than limit, carry on deleting
+                await bot.delete_message(x) 
+                counter += 1
+                await asyncio.sleep(1.5)
+        for role in regions.regions_list:   #For each role in role list, if the role doesn't exist already, create a new one, else, add to the counter
+            role_to_check = discord.utils.get(server_.roles, name=role)
+            if role_to_check in server_.roles:
+                 role_counter += 1
+            else:
+                await bot.create_role(server_, name = str(role))
+            react_message = await bot.say(str(role)) #Assigning the message to post of role name to a variable, and posting the role name message
+            await bot.add_reaction(react_message, "✅")  #Adding tick react to message
+            await bot.add_reaction(react_message, "❌")  #Adding cross react to message
+            await asyncio.sleep(2)  #Sleep for 2 seconds so no rate limiting
+    else:
+        print("error")
 
 
 @bot.command(pass_context=True)  # +server
