@@ -17,7 +17,6 @@ import lbry.input_check as incheck
 import lbry.mute as mutem
 import lbry.regions as regions
 import lbry.roles as roles_list
-import lbry.role_assigner as roleassi
 import lbry.store_in_drive as dstore
 
 # Google Sheets
@@ -46,10 +45,10 @@ async def on_ready():
     print("Hi, my name is " + bot.user.name)
     print("My ID is: " + bot.user.id)
     mutem.mutes_check() # Run the mutes check function in the mute_main file
-    time_when_launched = datetime.datetime.now()
+    time_when_launched = str(datetime.datetime.now())
     await mutes_checker() #Check and unmute any users who should not be muted, or await however long it'll take and unmute them on time
     while True:
-        time = datetime.datetime.now()
+        time = str(datetime.datetime.now())
         await react_messages() # Role auto assigner
         await react_messages_regions() # Regions auto assigner
         print("Dictionaries Cleared")
