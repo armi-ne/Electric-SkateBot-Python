@@ -8,7 +8,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import lbry.admins as adminslist
 import lbry.ban_command as banc
-import lbry.ban_list as banl
+import lbry.ban_formatter as banf
 import lbry.battery as batt
 import lbry.brand as brand_
 import lbry.converter as conv
@@ -324,7 +324,7 @@ async def ban(ctx, member: discord.Member, codeblock=None, *reason):
     if ctx.message.author.id in adminslist.admin_id and codeblock.isnumeric() and int(codeblock)<=7 and checkanswer == "Correct":
         await bot.ban(member, delete_message_days=int(codeblock))
         reason = banc.reason(reason)
-        banned_Name, banned_By, banned_Time, banned_Reason = banl.mute_data_formatter(member.name, ctx.message.author.name,  import_time, reason)
+        banned_Name, banned_By, banned_Time, banned_Reason = banf.ban_data_formatter(member.name, ctx.message.author.name,  import_time, reason)
         banned_ID = str(member.id)
         embed = discord.Embed(title="User Banned!", description="**{0}** was banned by **{1}**!".format(banned_Name, banned_By), color=0xFF0000)
         embed.add_field(name="Reason", value=banned_Reason)
