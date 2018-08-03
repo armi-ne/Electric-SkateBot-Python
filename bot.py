@@ -8,7 +8,6 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import lbry.admins as adminslist
 import lbry.ban_command as banc
-import lbry.ban_formatter as banf
 import lbry.battery as batt
 import lbry.brand as brand_
 import lbry.converter as conv
@@ -16,8 +15,10 @@ import lbry.easter_eggs as eastereggs
 import lbry.input_check as incheck
 import lbry.mute as mutem
 import lbry.regions as regions
-import lbry.roles as roles_list
+import lbry.roles as roles_list 
 import lbry.store_in_drive as dstore
+
+prefix_and_command_count = 0
 
 # Google Sheets
 scope = ["https://www.googleapis.com/auth/drive"]
@@ -66,21 +67,23 @@ async def mutes_checker():
         time_now = datetime.datetime.now() # Get time right now
         unmuted_on = value[1] # When they'll be unmuted, loaded as a string from same list in dictionary as muted_on.
         unmuted_on_parsed = datetime.datetime.strptime(unmuted_on, "%Y-%m-%d %H:%M:%S") # Turn unmuted_on from a string into a datetime object.
-        member = server.get_member(key) # Get the member object using the server get_member function using the User ID provided from they Key of each dictionary entry.
-        role = discord.utils.get(member.server.roles, name='Muted') # Get the role to  
-        if (unmuted_on_parsed < time_now) and role in member.roles: # If the time now has passed the unmute time and the user has the muted role, remove the role.
-            await bot.remove_roles(member, role)
-        elif (unmuted_on_parsed < time_now) and role not in member.roles: # If the time now has passed the unmute time but the user doesn't have the muted role, continue.
-            continue
-        elif (unmuted_on_parsed > time_now) and role in member.roles: # If the time now hasn't passed the unmute time and the user still has the muted role.
-            time_left = unmuted_on_parsed - time_now # Time left calculated by subtracting time now from unmute_time
-            time_left_seconds = time_left.total_seconds() # Time left turned into seconds for use with asyncio.sleep() function
-            if key is not None: # If the key is not a nonetype (user ID exists)
-                time_left_seconds2 = str(time_left_seconds).split('.')[0] # Time left in seconds is now stripped of anything passed the decimal point, turning it into a whole number for ease of use.
-                await bot.send_message(bot.get_channel(id='371587856042557440'), "+unmutebot " + str(key) + " " + str(time_left_seconds2)) # Bot invokes the +unmutebot on_message command
-        elif role not in member.roles: # If the bot/admins had previously removed the role, continue.
-            continue
-        await asyncio.sleep(10) # Sleep for 10 seconds before going to next user, this is so the on_message part of the bot has enough time to cycle through it's process.
+        if server.get_member(key) is not None:
+            member = server.get_member(key) # Get the member object using the server get_member function using the User ID provided from they Key of each dictionary entry.
+            if discord.utils.get(member.server.roles, name='Muted') is not None:
+                role = discord.utils.get(member.server.roles, name='Muted') # Get the role to  
+                if (unmuted_on_parsed < time_now) and role in member.roles: # If the time now has passed the unmute time and the user has the muted role, remove the role.
+                    await bot.remove_roles(member, role)
+                elif (unmuted_on_parsed < time_now) and role not in member.roles: # If the time now has passed the unmute time but the user doesn't have the muted role, continue.
+                    continue
+                elif (unmuted_on_parsed > time_now) and role in member.roles: # If the time now hasn't passed the unmute time and the user still has the muted role.
+                    time_left = unmuted_on_parsed - time_now # Time left calculated by subtracting time now from unmute_time
+                    time_left_seconds = time_left.total_seconds() # Time left turned into seconds for use with asyncio.sleep() function
+                    if key is not None: # If the key is not a nonetype (user ID exists)
+                        time_left_seconds2 = str(time_left_seconds).split('.')[0] # Time left in seconds is now stripped of anything passed the decimal point, turning it into a whole number for ease of use.
+                        await bot.send_message(bot.get_channel(id='371587856042557440'), "+unmutebot " + str(key) + " " + str(time_left_seconds2)) # Bot invokes the +unmutebot on_message command
+                elif role not in member.roles: # If the bot/admins had previously removed the role, continue.
+                    continue
+                await asyncio.sleep(10) # Sleep for 10 seconds before going to next user, this is so the on_message part of the bot has enough time to cycle through it's process.
 
 
 async def react_messages():
@@ -255,6 +258,8 @@ async def on_message(message):
     # Unmutebot
     if message.content.startswith("+unmutebot") and message.author.id == "417386039691182080":
         prefix_and_command, ID, time_to_wait = message.content.split(" ")
+        if prefix_and_command == True:
+            prefix_and_command_count += 1
         channel = bot.get_channel("425714572981436436")
         server = channel.server
         member = server.get_member(ID)
@@ -323,7 +328,7 @@ async def ban(ctx, member: discord.Member, codeblock=None, *reason):
     if ctx.message.author.id in adminslist.admin_id and codeblock.isnumeric() and int(codeblock)<=7 and checkanswer == "Correct":
         await bot.ban(member, delete_message_days=int(codeblock))
         reason = banc.reason(reason)
-        banned_Name, banned_By, banned_Time, banned_Reason = banf.ban_data_formatter(member.name, ctx.message.author.name,  import_time, reason)
+        banned_Name, banned_By, banned_Time, banned_Reason = incheck.ban_data_formatter(member.name, ctx.message.author.name,  import_time, reason)
         banned_ID = str(member.id)
         embed = discord.Embed(title="User Banned!", description="**{0}** was banned by **{1}**!".format(banned_Name, banned_By), color=0xFF0000)
         embed.add_field(name="Reason", value=banned_Reason)
